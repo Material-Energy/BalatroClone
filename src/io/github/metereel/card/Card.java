@@ -6,6 +6,7 @@ import processing.core.PVector;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.withTilt;
+import static io.github.metereel.Main.APP;
 
 public class Card {
     private final Text name;
@@ -47,6 +48,8 @@ public class Card {
     }
 
     public void display(){
+        this.isShaking = APP.frameCount % 60 > 30;
+
         float rot = this.rotation;
         if (isShaking){
             rot = withTilt(rot, 15, 0.25f);

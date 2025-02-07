@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0dfba24-3f62-472a-a6d7-3a21b02ddc2c" name="Changes" comment="Moved directories from processing">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/Helper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/Main.java" afterDir="false" />
+    <list default="true" id="f0dfba24-3f62-472a-a6d7-3a21b02ddc2c" name="Changes" comment="Removed some debug imports">
       <change beforePath="$PROJECT_DIR$/src/io/github/metereel/card/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/card/Card.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/sprites/Sprite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/Sprite.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/sprites/SpriteSheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/SpriteSheet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,12 +71,30 @@
       <option name="project" value="LOCAL" />
       <updated>1738899719379</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fixed incorrect colorization when combining two textures">
+      <option name="closed" value="true" />
+      <created>1738901424806</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738901424806</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Removed some debug imports">
+      <option name="closed" value="true" />
+      <created>1738901502689</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1738901502689</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Moved directories from processing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moved directories from processing" />
+    <MESSAGE value="Fixed incorrect colorization when combining two textures" />
+    <MESSAGE value="Removed some debug imports" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed some debug imports" />
   </component>
 </project>
