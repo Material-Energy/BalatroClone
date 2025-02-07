@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static io.github.metereel.Main.APP;
+import static processing.core.PApplet.printArray;
 
 public class SpriteSheet {
     private final PApplet app = APP;
@@ -17,7 +18,6 @@ public class SpriteSheet {
     String file;
 
     public SpriteSheet(String file, IDisplay... sprites){
-
         this.file = file;
         this.sprites.addAll(Arrays.asList(sprites));
     }
@@ -28,6 +28,9 @@ public class SpriteSheet {
 
     public void load(){
         spritesheet = app.loadImage("../resources/" + file + ".png");
+
+        System.out.println("Loading Sprites for " + file);
+
         for (IDisplay sprite : sprites){
             sprite.apply(this.spritesheet);
         }

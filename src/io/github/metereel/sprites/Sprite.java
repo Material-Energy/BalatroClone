@@ -1,8 +1,10 @@
 package io.github.metereel.sprites;
 
+import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
+import static processing.core.PApplet.print;
 import static processing.core.PApplet.println;
 import static processing.core.PConstants.ARGB;
 
@@ -30,8 +32,6 @@ public class Sprite extends IDisplay {
                 sizeHeight,
                 name
         );
-
-        println(this.image);
 
         sprite.override(this.image);
         return sprite;
@@ -89,17 +89,32 @@ public class Sprite extends IDisplay {
         int color2Blue = color2 & 0xFF;
 
         float alpha, red, green, blue;
-        alpha = Math.min(color1Alpha + color2Alpha, 255);
+        alpha = Math.max(color1Alpha, color2Alpha);
 
         float color1ARat, color2ARat;
         color1ARat = (float) color1Alpha / (color1Alpha + color2Alpha);
         color2ARat = (float) color2Alpha / (color1Alpha + color2Alpha);
 
-        red = color1ARat * color1Red + color2ARat * color2Red;
-        green = color1ARat * color1Green + color2ARat * color2Green;
-        blue = color1ARat * color1Blue + color2ARat * color2Blue;
+        if (color2Alpha >= 248.0f) {
+            red = color2Red;
+            green = color2Green;
+            blue = color2Blue;
+        } else if (Math.abs(color1Alpha - color2Alpha) <= 10.0f) {
+            red = color1ARat * color1Red + color2ARat * color2Red;
+            green = color1ARat * color1Green + color2ARat * color2Green;
+            blue = color1ARat * color1Blue + color2ARat * color2Blue;
+        } else if (color1Alpha > color2Alpha) {
+            red = color1Red;
+            green = color1Green;
+            blue = color1Blue;
+        } else {
+            red = color2Red;
+            green = color2Green;
+            blue = color2Blue;
+        }
 
-        return app.color(red, green, blue, alpha);
+        int color = app.color(red, green, blue, alpha);
+        return color;
     }
 
     @Override

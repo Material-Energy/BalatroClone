@@ -9,7 +9,7 @@ public class Helper {
     public static void loadFaces(){
         for (int i = 0; i < num.length; i++){
             for (int j = 0; j < suit.length; j++){
-                FACES.add(new Sprite(71 * i, 92 * j, 71, 92, num[i] + suit[j]));
+                FACES.add(new Sprite(71 * i, 94 * j, 71, 94, num[i] + suit[j]));
             }
         }
     }

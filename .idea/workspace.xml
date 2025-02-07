@@ -4,26 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0dfba24-3f62-472a-a6d7-3a21b02ddc2c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/core.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/balatro.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/Constants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/Helper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/card/Card.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/Animation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/IDisplay.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/Sprite.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/SpriteSheet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/github/metereel/text/Text.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/cards.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/faces.png" afterDir="false" />
+    <list default="true" id="f0dfba24-3f62-472a-a6d7-3a21b02ddc2c" name="Changes" comment="Moved directories from processing">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/Helper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/Helper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/card/Card.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/card/Card.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/sprites/Sprite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/Sprite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/io/github/metereel/sprites/SpriteSheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/io/github/metereel/sprites/SpriteSheet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,10 +42,10 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Application.Main.executor": "Run",
     "Application.Run.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
@@ -81,9 +69,20 @@
       <option name="presentableId" value="Default" />
       <updated>1738872410256</updated>
     </task>
+    <task id="LOCAL-00001" summary="Moved directories from processing">
+      <option name="closed" value="true" />
+      <created>1738899719379</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1738899719379</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Moved directories from processing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Moved directories from processing" />
   </component>
 </project>

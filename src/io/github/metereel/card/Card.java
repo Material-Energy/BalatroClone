@@ -19,7 +19,7 @@ public class Card {
     private String cardType;
     private String faceType;
 
-    private PVector pos = new PVector();
+    private final PVector pos = new PVector();
     private float rotation = 0.0f;
     private float size = 1.0f;
 
@@ -41,7 +41,7 @@ public class Card {
 
     public void updateSprite(){
         this.cardFront = CARDS.getSprite(cardType);
-        this.cardFront.layerSprite(FACES.getSprite(faceType), 1, 2);
+        this.cardFront.layerSprite(FACES.getSprite(faceType), 0, 0);
 
         this.cardBack = CARD_BACKS.getSprite(deckType);
     }
@@ -56,5 +56,10 @@ public class Card {
         } else {
             if (cardFront != null) cardFront.display(pos, rot, size);
         }
+    }
+
+    public void setPos(int x, int y) {
+        this.pos.x = x;
+        this.pos.y = y;
     }
 }
