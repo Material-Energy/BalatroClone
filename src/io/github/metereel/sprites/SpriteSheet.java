@@ -8,12 +8,11 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static io.github.metereel.Main.APP;
-import static processing.core.PApplet.printArray;
 
 public class SpriteSheet {
     private final PApplet app = APP;
 
-    ArrayList<IDisplay> sprites = new ArrayList<IDisplay>();
+    ArrayList<IDisplay> sprites = new ArrayList<>();
     PImage spritesheet;
     String file;
 

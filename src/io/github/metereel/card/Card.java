@@ -8,7 +8,7 @@ import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.withTilt;
 
 public class Card {
-    private Text name;
+    private final Text name;
     // private Lore description;
     private Sprite cardFront;
     private Sprite cardBack;

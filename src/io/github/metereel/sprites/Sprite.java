@@ -1,11 +1,8 @@
 package io.github.metereel.sprites;
 
-import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
-import static processing.core.PApplet.print;
-import static processing.core.PApplet.println;
 import static processing.core.PConstants.ARGB;
 
 public class Sprite extends IDisplay {
@@ -113,8 +110,7 @@ public class Sprite extends IDisplay {
             blue = color2Blue;
         }
 
-        int color = app.color(red, green, blue, alpha);
-        return color;
+        return app.color(red, green, blue, alpha);
     }
 
     @Override
