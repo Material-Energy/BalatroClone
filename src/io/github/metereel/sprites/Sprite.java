@@ -16,10 +16,6 @@ public class Sprite extends IDisplay {
         super(offsetX, offsetY, sizeWidth, sizeHeight, name);
     }
 
-    public PImage getSprite() {
-        return this.image;
-    }
-
     @Override
     public Sprite copy() {
         Sprite sprite = new Sprite(
@@ -63,6 +59,7 @@ public class Sprite extends IDisplay {
 
         for (int i = 0; i < layer.height; i++) {
             for (int j = 0; j < layer.width; j++) {
+
                 int layerIndex = i * image.width + j;
 
                 int imageIndex = (i + offsetY) * image.width + (j + offsetX);

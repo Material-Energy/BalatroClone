@@ -17,7 +17,7 @@ public class Text {
     ArrayList<Object> args = new ArrayList<>();
 
     public Text(String text){
-        this(text, app.color(0), 14);
+        this(text, 14);
     }
 
     public Text(String text, int size){
@@ -62,5 +62,10 @@ public class Text {
 
         app.popMatrix();
         this.args.clear();
+    }
+
+    @Override
+    public String toString() {
+        return text;
     }
 }

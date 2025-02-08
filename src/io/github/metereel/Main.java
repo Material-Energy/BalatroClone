@@ -1,7 +1,6 @@
 package io.github.metereel;
 
 import processing.core.PApplet;
-import processing.core.PVector;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
@@ -11,27 +10,43 @@ public class Main extends PApplet {
 
     @Override
     public void settings(){
-        size(500, 500);
+        size(1000, 1000);
 
         loadFaces();
 
         CARDS.load();
+        CARD_BACKS.load();
         FACES.load();
 
-        test.updateSprite();
+        hud.initialize();
     }
 
     @Override
     public void draw(){
         background(255);
 
-        test.display();
-        FACES.getSprite("aceSpades").display(new PVector((float) APP.width / 2, (float) APP.height / 2), 0.0f, 1.0f);
+        hud.getDeck().tick();
+        hud.display();
     }
 
     @Override
-    public void mousePressed(){
-        test.setPos(mouseX, mouseY);
+    public void mouseClicked(){
+        hud.onClick();
+    }
+
+    @Override
+    public void mouseDragged() {
+        hud.onDrag();
+    }
+
+    @Override
+    public void mouseReleased() {
+        hud.onRelease();
+    }
+
+    @Override
+    public void mousePressed() {
+        hud.onPressed();
     }
 
     public static void main(String[] args) {
