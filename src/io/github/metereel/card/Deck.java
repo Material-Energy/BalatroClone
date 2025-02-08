@@ -1,5 +1,6 @@
 package io.github.metereel.card;
 
+import io.github.metereel.HudDisplay;
 import io.github.metereel.text.Text;
 import processing.core.PVector;
 
@@ -10,6 +11,7 @@ import java.util.function.Consumer;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Main.APP;
+import static processing.core.PApplet.println;
 
 public class Deck {
     private static final int MAX_SELECTED = 5;
@@ -27,12 +29,16 @@ public class Deck {
     public Card hoveringCard;
     private boolean isDragging = false;
 
-    private final PVector pos = new PVector((float) 5 * APP.width / 6, (float) 3 * APP.height / 4);
+    private final PVector pos = new PVector((float) 5 * APP.width / 6, HudDisplay.HAND_Y);
 
     public Deck(){
         deckType = "deckNormal";
 
         generateDeck();
+    }
+
+    public int getHandSize() {
+        return currentHand.size();
     }
 
     protected void generateDeck() {
@@ -83,14 +89,14 @@ public class Deck {
         }
     }
 
-    private float calculateHandPos(int index, int totalCards){
+    public float calculateHandPos(int index, int totalCards){
         float axis = 0.4f * APP.width;
-        return (axis - (index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(axis), Math.abs(axis - APP.width)));
+        return (axis - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(axis), Math.abs(axis - APP.width)));
     }
 
     public void displayHand(){
         float x;
-        float y = 3 * APP.height / 4.0f;
+        float y = HudDisplay.HAND_Y;
 
         int displayedCards = currentHand.size();
 

@@ -23,7 +23,6 @@ public class Main extends PApplet {
 
     @Override
     public void draw(){
-        background(255);
 
         hud.getDeck().tick();
         hud.display();
