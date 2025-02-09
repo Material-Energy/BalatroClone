@@ -1,5 +1,6 @@
 package io.github.metereel;
 
+import io.github.metereel.gui.HudDisplay;
 import io.github.metereel.sprites.Sprite;
 import io.github.metereel.sprites.SpriteSheet;
 

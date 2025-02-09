@@ -1,6 +1,5 @@
 package io.github.metereel.card;
 
-import io.github.metereel.Helper;
 import io.github.metereel.Timer;
 import io.github.metereel.sprites.Sprite;
 import io.github.metereel.gui.Text;
@@ -8,7 +7,7 @@ import processing.core.PVector;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
-import static io.github.metereel.HudDisplay.hoveringCard;
+import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
 import static processing.core.PApplet.*;
 import static processing.core.PVector.*;
@@ -41,6 +40,7 @@ public abstract class Card {
     }
 
     public void setTargetPos(float x, float y, int translationTime) {
+        if (hasTarget()) return;
         this.targetPos.x = x;
         this.targetPos.y = y;
         this.translationTime = translationTime;
@@ -106,15 +106,15 @@ public abstract class Card {
         return (float) lerpTimer.getTime() / translationTime;
     }
 
-    public boolean hasNoTarget() {
-        return targetPos.x == -1;
+    public boolean hasTarget() {
+        return targetPos.x != -1;
     }
 
     public abstract void updateSprite();
 
     public void updateTargetPosition(){
         if (targetPos.dist(pos) <= 0.1f) targetPos.x = -1;
-        if (!hasNoTarget()) {
+        if (hasTarget()) {
             lerpTimer.incrementTimer();
             PVector delta = lerp(startPos, targetPos, lerpTimer.getTime() / (float) translationTime);
 

@@ -1,6 +1,6 @@
 package io.github.metereel.card;
 
-import io.github.metereel.HudDisplay;
+import io.github.metereel.gui.HudDisplay;
 import io.github.metereel.gui.Text;
 import processing.core.PVector;
 
@@ -10,11 +10,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static io.github.metereel.Constants.*;
-import static io.github.metereel.HudDisplay.hoveringCard;
+import static io.github.metereel.gui.HudDisplay.HAND_BOX_TOP;
+import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
 
 public class Deck {
-    public static final float AXIS = 0.4f * APP.width;
+    public static final float AXIS = 0.5f * APP.width;
     private static final int MAX_SELECTED = 5;
     private final String deckType;
 
@@ -116,6 +117,22 @@ public class Deck {
         if (hoveringCard != null) hoveringCard.display();
     }
 
+    public void displayDiscard(){
+        discardPile.forEach(card -> {
+            if (card.getState() == CardState.DISCARDING) return;
+            if (card.getPos().x >= APP.width) {
+                card.setState(CardState.DISCARDING);
+            } else if (card.getPos().y <= HAND_BOX_TOP - CARD_WIDTH && !card.isFlipped()){
+                card.flip();
+            } else if (card.getPos().y <= HAND_BOX_TOP - CARD_WIDTH){
+                card.setTargetPos(APP.width + 20, HAND_BOX_TOP - CARD_WIDTH, 4);
+            } else {
+                card.setTargetPos(card.getPos().x, HAND_BOX_TOP - CARD_WIDTH, 2);
+            }
+            card.display();
+        });
+    }
+
     public void tick(){
         fillHand();
 
@@ -130,6 +147,7 @@ public class Deck {
                 hoveringCard = card;
             }
         });
+        discardPile.forEach(Card::tick);
     }
 
     public void toggleSelected(Card card) {
@@ -156,9 +174,7 @@ public class Deck {
         this.isDragging = true;
         draggedCard.setState(CardState.DRAGGING);
 
-        if (draggedCard.hasNoTarget()) draggedCard.setTargetPos(APP.mouseX, APP.mouseY, 1);
-
-        if (draggedCard.hasNoTarget()) return;
+        draggedCard.setTargetPos(APP.mouseX, APP.mouseY, 1);
 
         AtomicBoolean hasSwapped = new AtomicBoolean(false);
 
@@ -190,6 +206,7 @@ public class Deck {
     }
 
     public void discardSelected() {
+        discardPile.addAll(selectedCards);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
     }
