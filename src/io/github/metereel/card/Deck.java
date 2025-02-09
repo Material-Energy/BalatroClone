@@ -1,7 +1,7 @@
 package io.github.metereel.card;
 
 import io.github.metereel.HudDisplay;
-import io.github.metereel.text.Text;
+import io.github.metereel.gui.Text;
 import processing.core.PVector;
 
 import java.util.ArrayList;
@@ -11,9 +11,9 @@ import java.util.function.Consumer;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Main.APP;
-import static processing.core.PApplet.println;
 
 public class Deck {
+    public static final float AXIS = 0.4f * APP.width;
     private static final int MAX_SELECTED = 5;
     private final String deckType;
 
@@ -38,7 +38,11 @@ public class Deck {
     }
 
     public int getHandSize() {
-        return currentHand.size();
+        return maxHandSize;
+    }
+
+    public int getSelectedAmt() {
+        return this.selectedCards.size();
     }
 
     protected void generateDeck() {
@@ -48,7 +52,7 @@ public class Deck {
                 String cardType = rank + suit;
 
                 Card card = new Card(this, new Text(rank + " of " + suit), deckType, "cardEmpty", cardType);
-                card.setPos(this.pos.x + offset, this.pos.y + offset);
+                card.setPos(this.pos.x + offset, this.pos.y - offset);
                 offset += 0.1f;
 
                 currentDeck.add(card);
@@ -90,8 +94,7 @@ public class Deck {
     }
 
     public float calculateHandPos(int index, int totalCards){
-        float axis = 0.4f * APP.width;
-        return (axis - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(axis), Math.abs(axis - APP.width)));
+        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(AXIS), Math.abs(AXIS - APP.width)));
     }
 
     public void displayHand(){
@@ -186,5 +189,10 @@ public class Deck {
 
         if (hasSwapped.get())
             selectedCards.sort((card1, card2) -> Integer.compare(currentHand.indexOf(card1), currentHand.indexOf(card2)));
+    }
+
+    public void discardSelected() {
+        currentHand.removeAll(selectedCards);
+        selectedCards.clear();
     }
 }

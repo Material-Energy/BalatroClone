@@ -25,7 +25,13 @@ public class Helper {
         return radians(currentDeg + Math.abs((time / cycle) % (maxTiltDeg * 4) - maxTiltDeg * 2) - maxTiltDeg);
     }
 
-    public static boolean withinBounds(PVector pos, float lowerX, float upperX, float lowerY, float upperY){
+    public static boolean withinBounds(PVector pos, PVector center, float width, float height){
+        float upperX = center.x + width / 2;
+        float lowerX = center.x - width / 2;
+
+        float upperY = center.y + height / 2;
+        float lowerY = center.y - height / 2;
+
         return lowerX <= pos.x && pos.x <= upperX && lowerY <= pos.y && pos.y <= upperY;
     }
 

@@ -1,12 +1,15 @@
 package io.github.metereel;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
 
 public class Main extends PApplet {
     public static PApplet APP = new Main();
+    public static PFont FONT;
+
 
     @Override
     public void settings(){
@@ -19,6 +22,12 @@ public class Main extends PApplet {
         FACES.load();
 
         hud.initialize();
+    }
+
+    @Override
+    public void setup() {
+        FONT = APP.createFont("../resources/balatro.ttf", 32);
+        textFont(FONT);
     }
 
     @Override
@@ -46,6 +55,11 @@ public class Main extends PApplet {
     @Override
     public void mousePressed() {
         hud.onPressed();
+    }
+
+    @Override
+    public void mouseMoved() {
+        hud.onMoved();
     }
 
     public static void main(String[] args) {

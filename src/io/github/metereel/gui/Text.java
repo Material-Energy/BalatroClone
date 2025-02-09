@@ -1,4 +1,4 @@
-package io.github.metereel.text;
+package io.github.metereel.gui;
 
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -68,4 +68,5 @@ public class Text {
     public String toString() {
         return text;
     }
+
 }

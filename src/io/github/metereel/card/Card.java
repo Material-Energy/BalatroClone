@@ -3,7 +3,7 @@ package io.github.metereel.card;
 import io.github.metereel.Helper;
 import io.github.metereel.Timer;
 import io.github.metereel.sprites.Sprite;
-import io.github.metereel.text.Text;
+import io.github.metereel.gui.Text;
 import processing.core.PVector;
 
 import static io.github.metereel.Constants.*;
@@ -66,28 +66,18 @@ public class Card {
         this.isSelected = b;
     }
 
-    public PVector getPos() {
-        return this.pos.copy();
+    public void setRankSuit(String rankSuit){
+        this.rankSuit = rankSuit;
+        updateSprite();
     }
 
-    public float getRotation(){
-        return this.rotation;
+    public void setCardType(String cardType){
+        this.cardType = cardType;
+        updateSprite();
     }
 
     public void setSize(float scale){
         this.size = scale;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public float getSize(){
-        return this.size;
-    }
-
-    public CardState getState() {
-        return this.cardState;
     }
 
     public void setState(CardState state){
@@ -98,18 +88,32 @@ public class Card {
         this.rotation = rotation;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public Text getName() {
+        return this.name;
+    }
+
+    public PVector getPos() {
+        return this.pos.copy();
+    }
+
+    public float getSize(){
+        return this.size;
+    }
+
+    public float getRotation(){
+        return this.rotation;
+    }
+
+    public CardState getState() {
+        return this.cardState;
+    }
+
     public void upgradeCard(int shift){
         this.rankSuit = Helper.upgradeCard(rankSuit, shift);
-        updateSprite();
-    }
-
-    public void setRankSuit(String rankSuit){
-        this.rankSuit = rankSuit;
-        updateSprite();
-    }
-
-    public void setCardType(String cardType){
-        this.cardType = cardType;
         updateSprite();
     }
 
@@ -148,13 +152,11 @@ public class Card {
     }
 
     public boolean isHovering(){
-        float upperX = this.getPos().x + (float) CARD_WIDTH * getSize() / 2;
-        float lowerX = this.getPos().x - (float) CARD_WIDTH * getSize() / 2;
 
-        float upperY = this.getPos().y + (float) CARD_HEIGHT * getSize() / 2;
-        float lowerY = this.getPos().y - (float) CARD_HEIGHT * getSize() / 2;
-
-        boolean withinCard = withinBounds(new PVector(APP.mouseX, APP.mouseY), lowerX, upperX, lowerY, upperY);
+        boolean withinCard = withinBounds(new PVector(APP.mouseX, APP.mouseY),
+                pos,
+                CARD_WIDTH * getSize(),
+                CARD_HEIGHT * getSize());
         boolean noHovering = deck.hoveringCard == null || deck.hoveringCard == this;
         return noHovering && withinCard && getState() != CardState.DRAGGING;
     }
