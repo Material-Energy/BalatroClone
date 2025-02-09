@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static io.github.metereel.Constants.*;
+import static io.github.metereel.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
 
 public class Deck {
@@ -26,7 +27,6 @@ public class Deck {
 
     private final ArrayList<Card> selectedCards = new ArrayList<>();
 
-    public Card hoveringCard;
     private boolean isDragging = false;
 
     private final PVector pos = new PVector((float) 5 * APP.width / 6, HudDisplay.HAND_Y);
@@ -51,7 +51,7 @@ public class Deck {
             for (String suit: suits){
                 String cardType = rank + suit;
 
-                Card card = new Card(this, new Text(rank + " of " + suit), deckType, "cardEmpty", cardType);
+                Card card = new PlayingCard(this, new Text(rank + " of " + suit), deckType, "cardEmpty", cardType);
                 card.setPos(this.pos.x + offset, this.pos.y - offset);
                 offset += 0.1f;
 
@@ -65,7 +65,6 @@ public class Deck {
     }
 
     public void setPlayingDeck(){
-        this.hoveringCard = null;
         this.playingDeck.clear();
         this.playingDeck.addAll(this.currentDeck);
 
@@ -82,7 +81,6 @@ public class Deck {
     }
 
     public void clearHand(){
-        this.hoveringCard = null;
         currentHand.clear();
     }
 

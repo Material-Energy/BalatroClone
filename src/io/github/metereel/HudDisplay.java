@@ -1,5 +1,6 @@
 package io.github.metereel;
 
+import io.github.metereel.card.Card;
 import io.github.metereel.card.Deck;
 import io.github.metereel.gui.Button;
 import io.github.metereel.gui.Text;
@@ -15,6 +16,7 @@ public class HudDisplay {
     private final Deck currentDeck;
 
     private final Button discardButton;
+    public static Card hoveringCard;
 
     public HudDisplay(){
         currentDeck = new Deck();
@@ -63,19 +65,20 @@ public class HudDisplay {
 
         currentDeck.displayHand();
 
-        if (currentDeck.hoveringCard != null){
-            Text cardName = currentDeck.hoveringCard.getName();
+        if (hoveringCard != null){
+            Text cardName = hoveringCard.getName();
+            cardName.setColor(APP.color(255));
             cardName.display(new PVector(.36f * APP.width, .845f * APP.height), 0f);
         }
     }
 
     public void onClick() {
-        currentDeck.toggleSelected(currentDeck.hoveringCard);
+        currentDeck.toggleSelected(hoveringCard);
         checkDiscardButton();
     }
 
     public void onDrag() {
-        currentDeck.dragCard(currentDeck.hoveringCard);
+        currentDeck.dragCard(hoveringCard);
     }
 
     public void onRelease() {
@@ -89,7 +92,7 @@ public class HudDisplay {
     }
 
     public void onPressed() {
-        currentDeck.dragCard(currentDeck.hoveringCard);
+        currentDeck.dragCard(hoveringCard);
         checkDiscardButton();
     }
 

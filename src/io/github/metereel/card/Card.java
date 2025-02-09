@@ -8,26 +8,23 @@ import processing.core.PVector;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
+import static io.github.metereel.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
 import static processing.core.PApplet.*;
 import static processing.core.PVector.*;
 
-public class Card {
+public abstract class Card {
     private final Timer shakingTimer = new Timer();
     private final Timer lerpTimer = new Timer();
 
-    private final Deck deck;
     private final Text name;
     // private Lore description;
-    private Sprite cardFront;
-    private Sprite cardBack;
+    Sprite cardFront;
+    Sprite cardBack;
     private boolean isFlipped = false;
     private boolean isShaking = false;
     private boolean isSelected = false;
 
-    private final String deckType;
-    private String cardType;
-    private String rankSuit;
 
     private final PVector pos = new PVector();
     private final PVector targetPos = new PVector(-1.0f, 0.0f);
@@ -39,13 +36,8 @@ public class Card {
     private float rotation = 0.0f;
     private float size = 1.0f;
 
-    public Card(Deck deck, Text name, String deckType, String cardType, String rankSuit){
-        this.deck = deck;
+    public Card(Text name){
         this.name = name;
-        this.deckType = deckType;
-        this.cardType = cardType;
-        this.rankSuit = rankSuit;
-
     }
 
     public void setTargetPos(float x, float y, int translationTime) {
@@ -64,16 +56,6 @@ public class Card {
 
     public void setSelected(boolean b) {
         this.isSelected = b;
-    }
-
-    public void setRankSuit(String rankSuit){
-        this.rankSuit = rankSuit;
-        updateSprite();
-    }
-
-    public void setCardType(String cardType){
-        this.cardType = cardType;
-        updateSprite();
     }
 
     public void setSize(float scale){
@@ -112,11 +94,6 @@ public class Card {
         return this.cardState;
     }
 
-    public void upgradeCard(int shift){
-        this.rankSuit = Helper.upgradeCard(rankSuit, shift);
-        updateSprite();
-    }
-
     public void flip(){
         this.isFlipped = !isFlipped;
     }
@@ -133,12 +110,7 @@ public class Card {
         return targetPos.x == -1;
     }
 
-    public void updateSprite(){
-        this.cardFront = CARDS.getSprite(cardType);
-        this.cardFront.layerSprite(FACES.getSprite(rankSuit), 0, 0);
-
-        this.cardBack = CARD_BACKS.getSprite(deckType);
-    }
+    public abstract void updateSprite();
 
     public void updateTargetPosition(){
         if (targetPos.dist(pos) <= 0.1f) targetPos.x = -1;
@@ -157,7 +129,7 @@ public class Card {
                 pos,
                 CARD_WIDTH * getSize(),
                 CARD_HEIGHT * getSize());
-        boolean noHovering = deck.hoveringCard == null || deck.hoveringCard == this;
+        boolean noHovering = hoveringCard == null || hoveringCard == this;
         return noHovering && withinCard && getState() != CardState.DRAGGING;
     }
 
