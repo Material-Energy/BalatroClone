@@ -126,7 +126,7 @@ public abstract class Card {
     }
 
     public boolean isHovering(){
-
+        
         boolean withinCard = withinBounds(new PVector(APP.mouseX, APP.mouseY),
                 pos,
                 CARD_WIDTH * getSize(),
@@ -177,7 +177,7 @@ public abstract class Card {
 
     @Override
     public String toString() {
-        return name + "{targetPos = " + targetPos + "}";
+        return STR."\{name}{pos = \{pos}, targetPos = \{targetPos}, size = \{size}}";
     }
 
     public void shakeFor(int i) {

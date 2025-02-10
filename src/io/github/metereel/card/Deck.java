@@ -29,7 +29,7 @@ public class Deck {
 
     private final ArrayList<PlayingCard> selectedCards = new ArrayList<>();
 
-    private final PVector pos = new PVector((float) 5 * APP.width / 6, HudDisplay.HAND_Y);
+    private final PVector pos = new PVector(.9f * APP.width, HudDisplay.HAND_Y);
 
     public Deck(){
         deckType = "Deck Normal";
@@ -89,6 +89,16 @@ public class Deck {
         while (currentHand.size() < maxHandSize){
             if (this.playingDeck.isEmpty()) return;
             currentHand.add(this.playingDeck.removeFirst());
+
+            currentHand.sort((card1, card2) -> {
+                int rank1 = RANKS.indexOf(card1.getRankSuit().split(" ")[0]);
+                int rank2 = RANKS.indexOf(card2.getRankSuit().split(" ")[0]);
+
+                int suit1 = SUITS.indexOf(card1.getRankSuit().split(" ")[1]);
+                int suit2 = SUITS.indexOf(card2.getRankSuit().split(" ")[1]);
+
+                return Integer.compare(rank1 * 10 + suit1, rank2 * 10 + suit2);
+            });
         }
     }
 
@@ -198,6 +208,13 @@ public class Deck {
         discardPile.addAll(selectedCards);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
+    }
+
+    public ArrayList<PlayingCard> playHand(){
+        ArrayList<PlayingCard> playedHand = new ArrayList<>(selectedCards);
+        currentHand.removeAll(selectedCards);
+        selectedCards.clear();
+        return playedHand;
     }
 
     public ArrayList<PlayingCard> getCurrentHand() {

@@ -69,4 +69,7 @@ public class Text {
         return text;
     }
 
+    public int getSize() {
+        return size;
+    }
 }

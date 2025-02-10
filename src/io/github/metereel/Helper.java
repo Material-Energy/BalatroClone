@@ -2,6 +2,7 @@ package io.github.metereel;
 
 import io.github.metereel.card.HandType;
 import io.github.metereel.card.PlayingCard;
+import io.github.metereel.gui.Text;
 import io.github.metereel.sprites.Sprite;
 import processing.core.PVector;
 
@@ -11,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static io.github.metereel.Constants.*;
+import static io.github.metereel.Main.APP;
 import static io.github.metereel.card.HandType.*;
 import static processing.core.PApplet.*;
 
@@ -20,6 +22,13 @@ public class Helper {
             for (int j = 0; j < SUITS.size(); j++){
                 FACES.add(new Sprite(CARD_WIDTH * i, CARD_HEIGHT * j, CARD_WIDTH, CARD_HEIGHT, STR."\{RANKS.get(i)} \{SUITS.get(j)}"));
             }
+        }
+    }
+
+    public static void loadLevels(){
+        handLevels.clear();
+        for (HandType type: HandType.values()){
+            handLevels.put(type, 1);
         }
     }
 
@@ -52,6 +61,11 @@ public class Helper {
         return RANKS.get(index) + suit;
     }
 
+    public static void drawBubble(int color, PVector pos, PVector size, int padding){
+        APP.fill(color);
+        APP.rect(pos.x - size.x * 0.5f, pos.y - size.y * 0.5f, size.x, size.y, padding);
+    }
+
     public static HandType getHand(ArrayList<PlayingCard> hand){
         if (hand.size() <= 1) return HIGH_CARD;
 
@@ -79,6 +93,7 @@ public class Helper {
         for (String rank : freqRanks.keySet()){
             int quantity = Math.toIntExact(freqRanks.get(rank));
             if (quantity > maxCardCount){
+                secondCardCount = maxCardCount;
                 maxCardCount = quantity;
             } else if (quantity > secondCardCount){
                 secondCardCount = quantity;
@@ -146,7 +161,7 @@ public class Helper {
         for (PlayingCard card : hand){
             ranks.add(card.getRankSuit().split(" ")[0]);
         }
-        SortedMap<String, Long> freqRanks = (SortedMap<String, Long>) ranks.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        HashMap<String, Long> freqRanks = new HashMap<>(ranks.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting())));
 
 
         switch (handType){

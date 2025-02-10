@@ -1,11 +1,13 @@
 package io.github.metereel;
 
+import io.github.metereel.card.HandType;
 import io.github.metereel.gui.HudDisplay;
 import io.github.metereel.sprites.Sprite;
 import io.github.metereel.sprites.SpriteSheet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Constants {
     public static final int CARD_WIDTH = 71;
@@ -21,6 +23,8 @@ public class Constants {
 
     public static final ArrayList<String> RANKS = new ArrayList<>(Arrays.asList("2 3 4 5 6 7 8 9 10 Jack Queen King Ace".split(" ")));
     public static final ArrayList<String> SUITS = new ArrayList<>(Arrays.asList("Hearts Clubs Diamonds Spades".split(" ")));
+
+    public static final HashMap<HandType, Integer> handLevels = new HashMap<>();
 
     public static final HudDisplay HUD = new HudDisplay();
 }

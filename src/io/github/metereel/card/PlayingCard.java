@@ -45,4 +45,11 @@ public class PlayingCard extends Card{
 
         this.cardBack = CARD_BACKS.getSprite(deckType);
     }
+
+    public boolean canTrigger() {
+        return false;
+    }
+
+    public void tryTrigger() {
+    }
 }
