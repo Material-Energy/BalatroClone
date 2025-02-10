@@ -34,6 +34,7 @@ public abstract class Card {
 
     private float rotation = 0.0f;
     private float size = 1.0f;
+    private boolean hasTarget = false;
 
     public Card(Text name){
         this.name = name;
@@ -41,6 +42,7 @@ public abstract class Card {
 
     public void setTargetPos(float x, float y, int translationTime) {
         if (hasTarget()) return;
+        hasTarget = true;
         this.targetPos.x = x;
         this.targetPos.y = y;
         this.translationTime = translationTime;
@@ -107,13 +109,13 @@ public abstract class Card {
     }
 
     public boolean hasTarget() {
-        return targetPos.x != -1;
+        return hasTarget;
     }
 
     public abstract void updateSprite();
 
     public void updateTargetPosition(){
-        if (targetPos.dist(pos) <= 0.1f) targetPos.x = -1;
+        if (targetPos.dist(pos) <= 0.1f) hasTarget = false;
         if (hasTarget()) {
             lerpTimer.incrementTimer();
             PVector delta = lerp(startPos, targetPos, lerpTimer.getTime() / (float) translationTime);

@@ -70,6 +70,7 @@ public class Deck {
         this.playingDeck.addAll(this.currentDeck);
 
         Collections.shuffle(this.playingDeck);
+        this.playingDeck.forEach(card -> card.setState(CardState.DRAWING));
     }
 
     public void displayDeck() {
@@ -108,7 +109,17 @@ public class Deck {
             x = calculateHandPos(i, displayedCards);
 
             CardState state = card.getState();
-            if (state != CardState.DISCARDING && state != CardState.DRAGGING) card.setTargetPos(x, y, 20);
+            if (state == CardState.DRAWING) {
+                if (card.getPos().dist(new PVector(x, y)) >= 0.1f) card.setTargetPos(x, y, 10);
+                if (card.isFlipped() && card.lerpProgress() > 0.9f) card.flip();
+
+                if (!card.hasTarget()){
+                    card.setState(CardState.IDLE);
+                }
+            }
+            else if (state == CardState.IDLE) {
+                card.setPos(x, y);
+            }
             if (card.isFlipped() && card.lerpProgress() > 0.5f) card.flip();
         }
 
@@ -166,7 +177,7 @@ public class Deck {
     public void stopDragging() {
         this.isDragging = false;
         if (hoveringCard == null) return;
-        hoveringCard.setState(CardState.IDLE);
+        hoveringCard.setState(CardState.DRAWING);
     }
 
     public void dragCard(Card draggedCard) {
@@ -198,7 +209,7 @@ public class Deck {
         });
 
         currentHand.forEach(card -> {
-            if (card.getState() == CardState.SWAPPING) card.setState(CardState.IDLE);
+            if (card.getState() == CardState.SWAPPING) card.setState(CardState.DRAWING);
         });
 
         if (hasSwapped.get())

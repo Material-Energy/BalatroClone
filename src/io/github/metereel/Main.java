@@ -10,10 +10,9 @@ public class Main extends PApplet {
     public static PApplet APP = new Main();
     public static PFont FONT;
 
-
     @Override
     public void settings(){
-        size(1000, 1000);
+        size(1000, 1000, P2D);
 
         loadFaces();
 
@@ -28,6 +27,7 @@ public class Main extends PApplet {
     public void setup() {
         FONT = APP.createFont("../resources/balatro.ttf", 32);
         textFont(FONT);
+        surface.setResizable(true);
     }
 
     @Override
