@@ -20,6 +20,10 @@ public class PlayingCard extends Card{
         this.rankSuit = rankSuit;
     }
 
+    public String getRankSuit() {
+        return this.rankSuit;
+    }
+
     public void setRankSuit(String rankSuit){
         this.rankSuit = rankSuit;
         updateSprite();

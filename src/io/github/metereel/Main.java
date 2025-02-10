@@ -20,7 +20,7 @@ public class Main extends PApplet {
         CARD_BACKS.load();
         FACES.load();
 
-        hud.initialize();
+        HUD.initialize();
     }
 
     @Override
@@ -33,33 +33,33 @@ public class Main extends PApplet {
     @Override
     public void draw(){
 
-        hud.getDeck().tick();
-        hud.display();
+        HUD.tick();
+        HUD.display();
     }
 
     @Override
     public void mouseClicked(){
-        hud.onClick();
+        HUD.onClick();
     }
 
     @Override
     public void mouseDragged() {
-        hud.onDrag();
+        HUD.onDrag();
     }
 
     @Override
     public void mouseReleased() {
-        hud.onRelease();
+        HUD.onRelease();
     }
 
     @Override
     public void mousePressed() {
-        hud.onPressed();
+        HUD.onPressed();
     }
 
     @Override
     public void mouseMoved() {
-        hud.onMoved();
+        HUD.onMoved();
     }
 
     public static void main(String[] args) {

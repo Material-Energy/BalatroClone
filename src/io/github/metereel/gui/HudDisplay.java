@@ -1,7 +1,6 @@
 package io.github.metereel.gui;
 
-import io.github.metereel.card.Card;
-import io.github.metereel.card.Deck;
+import io.github.metereel.card.*;
 import processing.core.PVector;
 
 import static io.github.metereel.Constants.CARD_HEIGHT;
@@ -16,6 +15,8 @@ public class HudDisplay {
 
     private final Button discardButton;
     public static Card hoveringCard;
+    private boolean isDragging = false;
+    private HandType playingHand = HandType.HIGH_CARD;
 
     public HudDisplay(){
         currentDeck = new Deck();
@@ -44,9 +45,11 @@ public class HudDisplay {
         APP.background(APP.color(75, 105, 47));
 
         APP.fill(APP.color(255));
-        APP.text("(" + APP.mouseX + ", " + APP.mouseY + ")",
+        APP.text(STR."(\{APP.mouseX}, \{APP.mouseY}) \{Math.round(APP.frameRate)} FPS",
                 APP.width / 2.0f,
                 30);
+
+        APP.text(playingHand.toString(), APP.width / 2.0f, APP.height / 2.0f);
 
         drawHand();
         boolean hasDiscard = currentDeck.getSelectedAmt() > 0;
@@ -73,27 +76,44 @@ public class HudDisplay {
     }
 
     public void onClick() {
-        currentDeck.toggleSelected(hoveringCard);
         checkDiscardButton();
+
+        if (hoveringCard == null) return;
+        if (hoveringCard instanceof PlayingCard playingCard) {
+            playingHand = currentDeck.selectPlayingCard(playingCard);
+        }
     }
 
     public void onDrag() {
-        currentDeck.dragCard(hoveringCard);
+        this.isDragging = true;
+        if (hoveringCard == null) return;
+        hoveringCard.setState(CardState.DRAGGING);
+        hoveringCard.setPos(APP.mouseX, APP.mouseY);
+
+        if (hoveringCard instanceof PlayingCard playingCard) currentDeck.dragPlayingCard(playingCard);
     }
 
     public void onRelease() {
-        currentDeck.stopDragging();
         checkDiscardButton();
-
         boolean hasDiscard = currentDeck.getSelectedAmt() > 0;
         if (discardButton.checkClicked() && hasDiscard){
             currentDeck.discardSelected();
         }
+
+        this.isDragging = false;
+        if (hoveringCard == null) return;
+        if (hoveringCard instanceof PlayingCard playingCard) currentDeck.stopDragging(playingCard);
     }
 
     public void onPressed() {
-        currentDeck.dragCard(hoveringCard);
+        this.isDragging = true;
         checkDiscardButton();
+
+        if (hoveringCard == null) return;
+        hoveringCard.setState(CardState.DRAGGING);
+        hoveringCard.setPos(APP.mouseX, APP.mouseY);
+
+        if (hoveringCard instanceof PlayingCard playingCard) currentDeck.dragPlayingCard(playingCard);
     }
 
     public void onMoved() {
@@ -105,5 +125,20 @@ public class HudDisplay {
         boolean hasDiscard = currentDeck.getSelectedAmt() > 0;
 
         discardButton.setPressed(isHovering && hasDiscard);
+    }
+
+    public void tick() {
+        if (!isDragging && hoveringCard != null && !hoveringCard.isHovering()){
+            hoveringCard = null;
+        }
+
+        currentDeck.getCurrentHand().forEach(card -> {
+            card.tick();
+            if (card.isHovering() && hoveringCard == null){
+                hoveringCard = card;
+            }
+        });
+
+        currentDeck.tick();
     }
 }

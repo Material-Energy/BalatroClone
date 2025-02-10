@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static io.github.metereel.Constants.*;
+import static io.github.metereel.Helper.getHand;
 import static io.github.metereel.gui.HudDisplay.HAND_BOX_TOP;
 import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
@@ -19,21 +20,19 @@ public class Deck {
     private static final int MAX_SELECTED = 5;
     private final String deckType;
 
-    private final ArrayList<Card> currentDeck = new ArrayList<>();
+    private final ArrayList<PlayingCard> currentDeck = new ArrayList<>();
 
-    private final ArrayList<Card> discardPile = new ArrayList<>();
-    private final ArrayList<Card> playingDeck = new ArrayList<>();
-    private final ArrayList<Card> currentHand = new ArrayList<>();
+    private final ArrayList<PlayingCard> discardPile = new ArrayList<>();
+    private final ArrayList<PlayingCard> playingDeck = new ArrayList<>();
+    private final ArrayList<PlayingCard> currentHand = new ArrayList<>();
     private int maxHandSize = 8;
 
-    private final ArrayList<Card> selectedCards = new ArrayList<>();
-
-    private boolean isDragging = false;
+    private final ArrayList<PlayingCard> selectedCards = new ArrayList<>();
 
     private final PVector pos = new PVector((float) 5 * APP.width / 6, HudDisplay.HAND_Y);
 
     public Deck(){
-        deckType = "deckNormal";
+        deckType = "Deck Normal";
 
         generateDeck();
     }
@@ -48,11 +47,11 @@ public class Deck {
 
     protected void generateDeck() {
         float offset = 0;
-        for (String rank: ranks){
-            for (String suit: suits){
-                String cardType = rank + suit;
+        for (String rank: RANKS){
+            for (String suit: SUITS){
+                String cardType = STR."\{rank} \{suit}";
 
-                Card card = new PlayingCard(this, new Text(rank + " of " + suit), deckType, "cardEmpty", cardType);
+                PlayingCard card = new PlayingCard(this, new Text(STR."\{rank} of \{suit}"), deckType, "Card Empty", cardType);
                 card.setPos(this.pos.x + offset, this.pos.y - offset);
                 offset += 0.1f;
 
@@ -147,45 +146,24 @@ public class Deck {
     public void tick(){
         fillHand();
 
-
-        if (!isDragging && hoveringCard != null && !hoveringCard.isHovering()){
-            hoveringCard = null;
-        }
-
-        currentHand.forEach(card -> {
-            card.tick();
-            if (card.isHovering() && hoveringCard == null){
-                hoveringCard = card;
-            }
-        });
         discardPile.forEach(Card::tick);
     }
 
-    public void toggleSelected(Card card) {
-        if (card == null) return;
-
+    public HandType selectPlayingCard(PlayingCard card) {
         if (selectedCards.contains(card)){
             selectedCards.remove(card);
-            card.setSelected(false);
+            hoveringCard.setSelected(false);
         } else if (selectedCards.size() < MAX_SELECTED){
             selectedCards.add(card);
+            hoveringCard.setSelected(true);
             selectedCards.sort((card1, card2) -> Integer.compare(currentHand.indexOf(card1), currentHand.indexOf(card2)));
-            card.setSelected(true);
         }
+
+        return getHand(selectedCards);
     }
 
-    public void stopDragging() {
-        this.isDragging = false;
-        if (hoveringCard == null) return;
-        hoveringCard.setState(CardState.DRAWING);
-    }
-
-    public void dragCard(Card draggedCard) {
+    public void dragPlayingCard(PlayingCard draggedCard) {
         if (draggedCard == null) return;
-        this.isDragging = true;
-        draggedCard.setState(CardState.DRAGGING);
-
-        draggedCard.setTargetPos(APP.mouseX, APP.mouseY, 1);
 
         AtomicBoolean hasSwapped = new AtomicBoolean(false);
 
@@ -220,5 +198,13 @@ public class Deck {
         discardPile.addAll(selectedCards);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
+    }
+
+    public ArrayList<PlayingCard> getCurrentHand() {
+        return this.currentHand;
+    }
+
+    public void stopDragging(PlayingCard card) {
+        card.setState(CardState.DRAWING);
     }
 }
