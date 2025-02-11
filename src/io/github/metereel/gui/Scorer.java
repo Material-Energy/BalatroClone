@@ -33,7 +33,8 @@ public class Scorer {
     }
 
     public void addChips(double amount){
-        chips = chips.add(new Apfloat(String.valueOf(amount)));
+        Apfloat addAmt = new Apfloat(String.valueOf(amount));
+        chips = chips.add(addAmt);
     }
 
     public void timeChips(double amount){
@@ -78,7 +79,9 @@ public class Scorer {
     }
 
     public void display(HandType handType){
-        setBaseScore(handType, handLevels.get(handType));
+        if (HUD.getDeck().getSelectedAmt() >= 1)
+            setBaseScore(handType, handLevels.get(handType));
+
         PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * 0.245f);
         PVector multPos = new PVector(APP.width * 0.2f, APP.height * 0.245f);
 
@@ -88,11 +91,14 @@ public class Scorer {
         new Text("X", APP.color(255), 25)
                 .display(new PVector(APP.width * .15f, APP.height * .245f), 0.0f);
 
-        if (HUD.getDeck().getSelectedAmt() < 1) {
+        if (HUD.getDeck().getSelectedAmt() < 1 && !HUD.currentlyPlaying()) {
             new Text("0", APP.color(255), 25)
                     .display(chipsPos, 0.0f);
             new Text("0", APP.color(255), 25)
                     .display(multPos, 0.0f);
+
+            chips = Apfloat.ZERO;
+            mult = Apfloat.ZERO;
             return;
         }
         new Text(format(true), APP.color(255), 25)

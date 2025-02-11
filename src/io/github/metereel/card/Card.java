@@ -23,6 +23,7 @@ public abstract class Card {
     private boolean isFlipped = false;
     private boolean isShaking = false;
     private boolean isSelected = false;
+    private boolean ignore = false;
 
 
     private final PVector pos = new PVector();
@@ -71,6 +72,8 @@ public abstract class Card {
     public void setRotation(float rotation){
         this.rotation = rotation;
     }
+
+    public void setIgnore(boolean ignore) {this.ignore = ignore;}
 
     public boolean isSelected() {
         return isSelected;
@@ -126,7 +129,7 @@ public abstract class Card {
     }
 
     public boolean isHovering(){
-        
+
         boolean withinCard = withinBounds(new PVector(APP.mouseX, APP.mouseY),
                 pos,
                 CARD_WIDTH * getSize(),
@@ -136,6 +139,7 @@ public abstract class Card {
     }
 
     public void updateStatus(){
+        if (ignore) return;
 
         if (isSelected()){
             this.setRotation(0.0f);

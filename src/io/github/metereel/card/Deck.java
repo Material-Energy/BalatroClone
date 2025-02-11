@@ -91,13 +91,13 @@ public class Deck {
             currentHand.add(this.playingDeck.removeFirst());
 
             currentHand.sort((card1, card2) -> {
-                int rank1 = RANKS.indexOf(card1.getRankSuit().split(" ")[0]);
-                int rank2 = RANKS.indexOf(card2.getRankSuit().split(" ")[0]);
+                int rank1 = RANKS.indexOf(card1.getRank());
+                int rank2 = RANKS.indexOf(card2.getRank());
 
-                int suit1 = SUITS.indexOf(card1.getRankSuit().split(" ")[1]);
-                int suit2 = SUITS.indexOf(card2.getRankSuit().split(" ")[1]);
+                int suit1 = SUITS.indexOf(card1.getSuit());
+                int suit2 = SUITS.indexOf(card2.getSuit());
 
-                return Integer.compare(rank1 * 10 + suit1, rank2 * 10 + suit2);
+                return -Integer.compare(rank1 * 10 + suit1, rank2 * 10 + suit2);
             });
         }
     }
@@ -208,6 +208,10 @@ public class Deck {
         discardPile.addAll(selectedCards);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
+    }
+
+    public void discard(ArrayList<PlayingCard> cards){
+        discardPile.addAll(cards);
     }
 
     public ArrayList<PlayingCard> playHand(){

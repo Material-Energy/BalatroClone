@@ -12,7 +12,6 @@ import static io.github.metereel.Constants.CARD_WIDTH;
 import static io.github.metereel.Helper.*;
 import static io.github.metereel.Main.APP;
 import static processing.core.PApplet.printArray;
-import static processing.core.PApplet.println;
 
 
 public class HudDisplay {
@@ -202,9 +201,20 @@ public class HudDisplay {
 
             playingTimer.incrementTimer();
             if (playingTimer.getTimeWithCycle(20) == 0) {
-                for (PlayingCard card : playedHand) {
-                    if (!card.canTrigger()) continue;
-                    card.tryTrigger();
+                ArrayList<PlayingCard> temp = new ArrayList<>(playedHand);
+                temp.removeIf(playingCard -> !playingCard.isSelected());
+
+                if (temp.getLast().hasTriggered()){
+                    this.currentlyPlayingHand = false;
+                    this.currentDeck.discard(this.playedHand);
+                    this.playedHand = null;
+                } else {
+                    for (PlayingCard card : playedHand) {
+                        card.setIgnore(false);
+                        if (card.hasTriggered() || !card.isSelected()) continue;
+                        card.tryTrigger(scorer);
+                        break;
+                    }
                 }
             }
         }
@@ -225,7 +235,12 @@ public class HudDisplay {
             card.setTargetPos(x, APP.width * .5f, 10);
             if (activeCards.contains(card)){
                 card.setSelected(true);
+                card.resetTrigger();
             }
         }
+    }
+
+    public boolean currentlyPlaying() {
+        return this.currentlyPlayingHand;
     }
 }

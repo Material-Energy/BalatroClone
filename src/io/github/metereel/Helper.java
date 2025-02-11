@@ -2,7 +2,6 @@ package io.github.metereel;
 
 import io.github.metereel.card.HandType;
 import io.github.metereel.card.PlayingCard;
-import io.github.metereel.gui.Text;
 import io.github.metereel.sprites.Sprite;
 import processing.core.PVector;
 
@@ -73,8 +72,8 @@ public class Helper {
         ArrayList<String> suits = new ArrayList<>(5);
 
         for (PlayingCard card : hand){
-            ranks.add(card.getRankSuit().split(" ")[0]);
-            suits.add(card.getRankSuit().split(" ")[1]);
+            ranks.add(card.getRank());
+            suits.add(card.getSuit());
         }
 
         Map<String, Long> freqRanks = ranks.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
@@ -159,7 +158,7 @@ public class Helper {
 
         ArrayList<String> ranks = new ArrayList<>(5);
         for (PlayingCard card : hand){
-            ranks.add(card.getRankSuit().split(" ")[0]);
+            ranks.add(card.getRank());
         }
         HashMap<String, Long> freqRanks = new HashMap<>(ranks.stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting())));
 
@@ -185,7 +184,7 @@ public class Helper {
                 final String finalMostRank = mostRank;
 
                 hand.forEach(playingCard -> {
-                    if (Objects.equals(playingCard.getRankSuit().split(" ")[0], finalMostRank)){
+                    if (Objects.equals(playingCard.getRank(), finalMostRank)){
                         outputHand.add(playingCard);
                     }
                 });
@@ -208,7 +207,7 @@ public class Helper {
                 final String finalSecondRank = secondRank;
 
                 hand.forEach(playingCard -> {
-                    String cardRank = playingCard.getRankSuit().split(" ")[0];
+                    String cardRank = playingCard.getRank();
                     if (Objects.equals(cardRank, finalMostRank) || Objects.equals(cardRank, finalSecondRank)){
                         outputHand.add(playingCard);
                     }
@@ -216,7 +215,7 @@ public class Helper {
                 return outputHand;
             }
             default -> {
-                hand.sort(Comparator.comparingInt(card -> RANKS.indexOf(card.getRankSuit().split(" ")[0])));
+                hand.sort(Comparator.comparingInt(card -> RANKS.indexOf(card.getRank())));
                 outputHand.add(hand.getLast());
                 return outputHand;
             }
