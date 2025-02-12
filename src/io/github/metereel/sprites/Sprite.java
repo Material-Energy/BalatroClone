@@ -3,6 +3,11 @@ package io.github.metereel.sprites;
 import processing.core.PImage;
 import processing.core.PVector;
 
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.IntUnaryOperator;
+
+import static processing.core.PApplet.println;
 import static processing.core.PConstants.ARGB;
 
 public class Sprite extends IDisplay {
@@ -34,7 +39,7 @@ public class Sprite extends IDisplay {
         this.image = image.copy();
     }
 
-    private void cropImage(int offsetX, int offsetY, int sizeWidth, int sizeHeight, PImage spritesheet) {
+    private void cropImage(PImage spritesheet) {
         this.image = app.createImage(sizeWidth, sizeHeight, ARGB);
         this.image.loadPixels();
 
@@ -68,6 +73,15 @@ public class Sprite extends IDisplay {
             }
         }
 
+        layer.updatePixels();
+        image.updatePixels();
+    }
+
+    public void applyMask(IntUnaryOperator pixelMap){
+        image.loadPixels();
+        for (int i = 0; i < image.pixels.length; i++){
+            image.pixels[i] = pixelMap.applyAsInt(image.pixels[i]);
+        }
         image.updatePixels();
     }
 
@@ -112,7 +126,7 @@ public class Sprite extends IDisplay {
 
     @Override
     public Sprite apply(PImage spritesheet) {
-        cropImage(offsetX, offsetY, sizeWidth, sizeHeight, spritesheet);
+        cropImage(spritesheet);
         return this;
     }
 
@@ -128,5 +142,14 @@ public class Sprite extends IDisplay {
 
         app.image(image, 0, 0);
         app.popMatrix();
+    }
+
+    @Override
+    public boolean hasNoImage() {
+        return this.image == null;
+    }
+
+    public PImage getImage() {
+        return this.image.copy();
     }
 }

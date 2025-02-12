@@ -215,8 +215,9 @@ public class Helper {
                 return outputHand;
             }
             default -> {
-                hand.sort(Comparator.comparingInt(card -> RANKS.indexOf(card.getRank())));
-                outputHand.add(hand.getLast());
+                outputHand.addAll(hand);
+                outputHand.sort(Comparator.comparingInt(card -> RANKS.indexOf(card.getRank())));
+                outputHand.removeIf(playingCard -> outputHand.indexOf(playingCard) != 0);
                 return outputHand;
             }
         }

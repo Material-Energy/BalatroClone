@@ -19,19 +19,23 @@ public class Main extends PApplet {
 
         loadFaces();
 
-        CARDS.load();
-        CARD_BACKS.load();
-        FACES.load();
 
-        HUD.initialize();
+
     }
 
     @Override
     public void setup() {
+        CARDS.load();
+        CARD_BACKS.load();
+        FACES.load();
+
         FONT = APP.createFont("../resources/balatro.ttf", 32);
+        APP.noStroke();
         textFont(FONT);
         PVector center = centerWindow();
         surface.setLocation((int) center.x, (int) center.y);
+
+        HUD.initialize();
     }
 
     public static PVector centerWindow() {
@@ -43,8 +47,10 @@ public class Main extends PApplet {
 
     @Override
     public void draw(){
-
-        Game.tick();
+        if (CARDS.isLoaded() && CARD_BACKS.isLoaded() && FACES.isLoaded())
+            Game.tick();
+        else
+            print("Waiting for sprites to load");
     }
 
     @Override

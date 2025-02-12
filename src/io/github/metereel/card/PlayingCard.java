@@ -1,13 +1,16 @@
 package io.github.metereel.card;
 
 import io.github.metereel.Helper;
+import io.github.metereel.api.Score;
 import io.github.metereel.gui.Scorer;
 import io.github.metereel.gui.Text;
 
 import java.util.Objects;
+import java.util.Random;
 
 import static io.github.metereel.Constants.*;
-import static processing.core.PApplet.radians;
+import static io.github.metereel.Main.APP;
+import static processing.core.PApplet.*;
 
 public class PlayingCard extends Card{
     private final Deck deck;
@@ -18,6 +21,7 @@ public class PlayingCard extends Card{
     private String rank;
     private String suit;
     private boolean triggered = false;
+    private Random random = new Random();
 
     public PlayingCard(Deck deck, Text name, String deckType, String cardType, String rankSuit) {
         super(name);
@@ -28,6 +32,8 @@ public class PlayingCard extends Card{
 
         this.rank = rankSuit.split(" ")[0];
         this.suit = rankSuit.split(" ")[1];
+
+        addTriggers();
     }
 
     public String getRankSuit() {
@@ -59,32 +65,62 @@ public class PlayingCard extends Card{
         this.setRankSuit(Helper.upgradeCard(rankSuit, shift));
     }
 
+    @Override
+    protected void addTriggers() {
+        trigger.addTrigger(new Score(Score.Type.ADD_CHIPS, getChips()), BASE_CHIPS);
+    }
+
     public void updateSprite(){
         this.cardFront = CARDS.getSprite(cardType);
         this.cardFront.layerSprite(FACES.getSprite(rankSuit), 0, 0);
 
+        switch (edition){
+            case FOIL -> cardFront.applyMask(color -> {
+                float alpha = APP.alpha(color);
+                float red = APP.red(color);
+                float green = APP.green(color);
+                float blue = APP.blue(color);
+                red = Math.max(0, red - 40);
+                green = Math.max(0, green - 40);
+                return APP.color(red, green, blue, alpha);
+            });
+        }
+
+        println(cardFront.getImage().pixels);
+
+
         this.cardBack = CARD_BACKS.getSprite(deckType);
     }
 
-    private double getChips() {
+    private float getChips() {
         return RankChips.getChips(this.getRank());
     }
 
-    public boolean hasTriggered() {
-        return triggered;
+    public boolean finishedTriggering() {
+        return this.trigger.getTriggersLeft() <= 0;
     }
 
     public void resetTrigger() {
-        this.triggered = false;
+        this.trigger.reset();
     }
 
     public void tryTrigger(Scorer scorer) {
-        triggered = true;
-
-        scorer.addChips(this.getChips());
+        this.trigger.triggerNext(scorer);
         this.setSize(1.65f);
         this.setRotation(radians(5));
         setIgnore(true);
+    }
+
+    public void onPlay(){
+        this.setRotation(0.0f);
+    }
+
+    public void onDiscard(){
+        this.setRotation(0.0f);
+    }
+
+    public void onDraw(){
+        this.setRotation(radians(random.nextInt(-2, 2)));
     }
 
 

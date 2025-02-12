@@ -1,5 +1,6 @@
 package io.github.metereel.card;
 
+import io.github.metereel.api.Edition;
 import io.github.metereel.gui.HudDisplay;
 import io.github.metereel.gui.Text;
 import processing.core.PVector;
@@ -56,6 +57,7 @@ public class Deck {
                 String cardType = STR."\{rank} \{suit}";
 
                 PlayingCard card = new PlayingCard(this, new Text(STR."\{rank} of \{suit}"), deckType, "Card Empty", cardType);
+                card.setEdition(Edition.FOIL);
                 card.setPos(this.pos.x + 5.2f - offset, this.pos.y - 5.2f + offset);
                 card.tick();
                 offset += 0.1f;
@@ -104,6 +106,7 @@ public class Deck {
         while (currentHand.size() < maxHandSize){
             if (this.playingDeck.isEmpty()) return;
             currentHand.add(this.playingDeck.removeFirst());
+            currentHand.getLast().onDraw();
 
             currentHand.sort((card1, card2) -> {
                 int rank1 = RANKS.indexOf(card1.getRank());
@@ -118,7 +121,7 @@ public class Deck {
     }
 
     public float calculateHandPos(int index, int totalCards){
-        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(AXIS - APP.width * 0.05f), Math.abs(AXIS - APP.width * 0.95f)));
+        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(AXIS - APP.width * 0.1f), Math.abs(AXIS - APP.width * 0.9f)));
     }
 
     public void displayHand(){
@@ -163,7 +166,7 @@ public class Deck {
             if (card.getPos().x >= APP.width) {
                 card.setState(CardState.DISCARDING);
             } else {
-                card.setTargetPos(card.getPos().x, HAND_BOX_TOP - CARD_WIDTH, 5);
+                card.setTargetPos(APP.width + 20, HAND_BOX_TOP - CARD_WIDTH, 5);
             }
             card.display();
         });
@@ -223,6 +226,7 @@ public class Deck {
     public void discardSelected() {
         this.discards--;
         discardPile.addAll(selectedCards);
+        selectedCards.forEach(PlayingCard::onDiscard);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
     }
@@ -234,6 +238,7 @@ public class Deck {
     public ArrayList<PlayingCard> playHand(){
         ArrayList<PlayingCard> playedHand = new ArrayList<>(selectedCards);
         this.hands--;
+        currentHand.forEach(PlayingCard::onPlay);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
         return playedHand;

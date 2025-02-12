@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import static io.github.metereel.Main.APP;
+import static processing.core.PApplet.print;
+import static processing.core.PApplet.println;
 
 public class SpriteSheet {
     private final PApplet app = APP;
@@ -15,6 +17,7 @@ public class SpriteSheet {
     ArrayList<IDisplay> sprites = new ArrayList<>();
     PImage spritesheet;
     String file;
+    private boolean loaded;
 
     public SpriteSheet(String file, IDisplay... sprites){
         this.file = file;
@@ -31,13 +34,21 @@ public class SpriteSheet {
         System.out.println("Loading Sprites for " + file);
 
         for (IDisplay sprite : sprites){
-            sprite.apply(this.spritesheet);
+            sprite.apply(this.spritesheet.copy());
         }
+        this.loaded = true;
     }
 
     public Sprite getSprite(String name){
+        if (spritesheet == null) spritesheet = app.loadImage("../resources/" + file + ".png");
+
         for (IDisplay sprite : sprites){
             if (Objects.equals(sprite.getName(), name) && sprite instanceof Sprite) {
+
+                if (sprite.hasNoImage()) {
+                    println("No image found, attempting replacement");
+                    sprite.apply(this.spritesheet.copy());
+                }
                 return (Sprite) sprite.copy();
             }
         }
@@ -45,11 +56,16 @@ public class SpriteSheet {
     }
 
     public Animation getAnim(String name){
-        for (IDisplay image : sprites){
-            if (Objects.equals(image.getName(), name) && image instanceof Animation) {
-                return (Animation) image.copy();
+        for (IDisplay anim : sprites){
+            if (Objects.equals(anim.getName(), name) && anim instanceof Animation) {
+                anim.apply(this.spritesheet);
+                return (Animation) anim.copy();
             }
         }
         return null;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
     }
 }

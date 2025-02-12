@@ -9,6 +9,6 @@ public enum CardState {
     SWAPPING,
     // When the card is moving with animation
     DRAWING,
-    PLAYING, // When the card is moving without animation
-    IDLE
+    PLAYING, // When the card is scoring
+    IDLE // When the card is moving without animation
 }

@@ -1,6 +1,8 @@
 package io.github.metereel.card;
 
 import io.github.metereel.Timer;
+import io.github.metereel.api.Edition;
+import io.github.metereel.api.Trigger;
 import io.github.metereel.sprites.Sprite;
 import io.github.metereel.gui.Text;
 import processing.core.PVector;
@@ -37,6 +39,8 @@ public abstract class Card {
     private int translationTime = 0;
 
     private CardState cardState = CardState.IDLE;
+    protected Edition edition = Edition.NORMAL;
+    protected Trigger trigger = new Trigger();
 
     private float rotation = 0.0f;
     private float size = 1.0f;
@@ -45,6 +49,8 @@ public abstract class Card {
     public Card(Text name){
         this.name = name;
     }
+
+    protected abstract void addTriggers();
 
     public void setTargetPos(float x, float y, int translationTime) {
         if (hasTarget()) return;
@@ -78,7 +84,18 @@ public abstract class Card {
         this.rotation = rotation;
     }
 
-    public void setIgnore(boolean ignore) {this.ignore = ignore;}
+    public void setEdition(Edition edition){
+        this.edition = edition;
+        this.trigger.addTrigger(edition.getScore(), EDITION);
+        this.updateSprite();
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+        if (!ignore) {
+            this.setRotation(0.0f);
+        }
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -152,7 +169,6 @@ public abstract class Card {
         if (ignore) return;
 
         if (isSelected()){
-            this.setRotation(0.0f);
             this.setSize(1.45f);
         }
 
@@ -178,7 +194,7 @@ public abstract class Card {
         APP.translate(translateTo.x, translateTo.y);
         APP.rotate(withTilt(floatTimer, getRotation(), 3, CARD_CYCLE));
         APP.scale(this.getSize());
-        drawBubble(APP.color(30), new PVector(0, 0), new PVector(CARD_WIDTH, CARD_HEIGHT), 5);
+        drawBubble(APP.color(30, 75), new PVector(0, 0), new PVector(CARD_WIDTH, CARD_HEIGHT), 5);
         APP.popMatrix();
     }
 

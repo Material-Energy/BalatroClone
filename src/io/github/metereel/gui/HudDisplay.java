@@ -1,19 +1,16 @@
 package io.github.metereel.gui;
 
-import io.github.metereel.Timer;
+import io.github.metereel.Game;
 import io.github.metereel.card.*;
 import org.apfloat.Apfloat;
 import processing.core.PVector;
 
-import java.util.ArrayList;
 
 import static io.github.metereel.Constants.CARD_HEIGHT;
 import static io.github.metereel.Constants.CARD_WIDTH;
-import static io.github.metereel.Game.inBlind;
+import static io.github.metereel.Game.*;
 import static io.github.metereel.Helper.*;
 import static io.github.metereel.Main.APP;
-import static io.github.metereel.card.Deck.AXIS;
-import static processing.core.PApplet.radians;
 
 
 public class HudDisplay {
@@ -21,7 +18,7 @@ public class HudDisplay {
     public static float HAND_BOX_TOP = HAND_Y - CARD_HEIGHT * 2 / 3.0f;
     public static int RED = APP.color(235, 50, 50);
     public static int BLUE = APP.color(0, 148, 255);
-    private final Deck currentDeck;
+    private Deck currentDeck;
     private int currentBlind = 0;
     private int ante = 1;
 
@@ -35,16 +32,11 @@ public class HudDisplay {
     private HandType playingHand = HandType.HIGH_CARD;
     private Scorer scorer;
 
-    private ArrayList<PlayingCard> playedHand;
-    private boolean currentlyPlayingHand;
-    private final Timer playingTimer = new Timer();
 
     public HudDisplay(){
-        currentDeck = new Deck();
-
         discardButton = new Button(
                 .72f * APP.width,
-                .845f * APP.height,
+                .855f * APP.height,
                 CARD_WIDTH * 2.0f,
                 CARD_HEIGHT / 3.0f,
                 RED,
@@ -53,7 +45,7 @@ public class HudDisplay {
         );
         playHandButton = new Button(
                 .42f * APP.width,
-                .845f * APP.height,
+                .855f * APP.height,
                 CARD_WIDTH * 2.0f,
                 CARD_HEIGHT / 3.0f,
                 BLUE,
@@ -69,6 +61,8 @@ public class HudDisplay {
     }
     
     public void initialize(){
+        currentDeck = new Deck();
+
         currentDeck.initializeTextures();
         currentDeck.setPlayingDeck();
         loadLevels();
@@ -190,8 +184,8 @@ public class HudDisplay {
     }
 
     private void drawPlayedHand() {
-        if (this.playedHand != null){
-            this.playedHand.forEach(Card::display);
+        if (playedHand != null){
+            playedHand.forEach(Card::display);
         }
     }
 
@@ -275,7 +269,7 @@ public class HudDisplay {
             if (discardButton.checkClicked() && hasSelected) {
                 currentDeck.discardSelected();
             } else if (playHandButton.checkClicked() && hasSelected) {
-                animateScoring(currentDeck.playHand());
+                startScoring(currentDeck.playHand());
             }
         } else {
             Button blindButton = blindButtons[currentBlind];
@@ -300,60 +294,13 @@ public class HudDisplay {
 
 
         currentDeck.tick();
-        if (this.playedHand != null){
-            this.playedHand.forEach(Card::tick);
-
-            playingTimer.incrementTimer();
-            if (playingTimer.getTimeWithCycle(20) == 10){
-                playedHand.forEach(card -> {
-                    if (card.isIgnoring()){
-                        card.setRotation(radians(-5));
-                        card.setSize(1.0f);
-                    }
-                    card.setIgnore(false);
-                });
-            }
-
-            if (playingTimer.getTimeWithCycle(20) == 0) {
-                ArrayList<PlayingCard> temp = new ArrayList<>(playedHand);
-                temp.removeIf(playingCard -> !playingCard.isSelected());
-
-                if (temp.getLast().hasTriggered()){
-                    this.currentlyPlayingHand = false;
-                    this.currentDeck.discard(this.playedHand);
-                    this.playedHand = null;
-                } else {
-                    for (PlayingCard card : playedHand) {
-                        if (card.hasTriggered() || !card.isSelected()) continue;
-                        card.tryTrigger(scorer);
-                        break;
-                    }
-                }
-            }
+        if (playedHand != null){
+            Game.scoreHand();
         }
     }
 
-    private void animateScoring(ArrayList<PlayingCard> playingCards) {
-        this.playedHand = playingCards;
-        this.currentlyPlayingHand = true;
-        playingTimer.resetTimer();
 
-        ArrayList<PlayingCard> activeCards = activeCards(playingCards);
-        for (PlayingCard card : playedHand){
-            card.setSelected(false);
-            card.setState(CardState.PLAYING);
-
-            float x = (playingCards.indexOf(card) - playingCards.size() * 0.5f) * APP.width * 0.1f + AXIS;
-            card.setTargetPos(x, APP.height * .5f, 10);
-
-            if (activeCards.contains(card)){
-                card.setSelected(true);
-                card.resetTrigger();
-            }
-        }
-    }
-
-    public boolean currentlyPlaying() {
-        return this.currentlyPlayingHand;
+    public Scorer getScorer() {
+        return this.scorer;
     }
 }

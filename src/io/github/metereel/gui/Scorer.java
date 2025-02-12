@@ -7,6 +7,7 @@ import processing.core.PVector;
 
 import static io.github.metereel.Constants.HUD;
 import static io.github.metereel.Constants.handLevels;
+import static io.github.metereel.Game.currentlyPlayingHand;
 import static io.github.metereel.Helper.drawBubble;
 import static io.github.metereel.Main.APP;
 import static io.github.metereel.gui.HudDisplay.BLUE;
@@ -39,8 +40,8 @@ public class Scorer {
         chips = chips.add(addAmt);
     }
 
-    public void timeChips(double amount){
-        chips = chips.multiply(new Apfloat(String.valueOf(amount)));
+    public void powChips(double amount){
+        chips = ApfloatMath.pow(chips, new Apfloat(String.valueOf(amount)));
     }
 
     public void addMult(double amount){
@@ -91,7 +92,7 @@ public class Scorer {
         PVector multPos = new PVector(APP.width * 0.2f, APP.height * 0.245f);
 
 
-        if ((HUD.getDeck().getSelectedAmt() < 1 && !HUD.currentlyPlaying()) || override) {
+        if ((HUD.getDeck().getSelectedAmt() < 1 && !currentlyPlayingHand) || override) {
             new Text("0", APP.color(255), 25)
                     .display(chipsPos, 0.0f);
             new Text("0", APP.color(255), 25)

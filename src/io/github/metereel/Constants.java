@@ -13,11 +13,14 @@ public class Constants {
     public static final int CARD_WIDTH = 71;
     public static final int CARD_HEIGHT = 95;
 
-    public static final SpriteSheet CARD_BACKS = new SpriteSheet("cards",
-            new Sprite(213, 190, CARD_WIDTH, CARD_HEIGHT, "Deck Normal")
+    public static final int BASE_CHIPS = 0;
+    public static final int EDITION = 1;
+
+    public static final SpriteSheet CARD_BACKS = new SpriteSheet("card_backs",
+            new Sprite(0, 0, CARD_WIDTH, CARD_HEIGHT, "Deck Normal")
     );
-    public static final SpriteSheet CARDS = new SpriteSheet("cards",
-            new Sprite(71, 0, CARD_WIDTH, CARD_HEIGHT, "Card Empty"));
+    public static final SpriteSheet CARDS = new SpriteSheet("card_empty",
+            new Sprite(0, 0, CARD_WIDTH, CARD_HEIGHT, "Card Empty"));
 
     public static final SpriteSheet FACES = new SpriteSheet( "faces");
 

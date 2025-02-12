@@ -34,4 +34,8 @@ public abstract class IDisplay {
     public String getName(){
         return this.name;
     }
+
+    public boolean hasNoImage() {
+        return false;
+    }
 }
