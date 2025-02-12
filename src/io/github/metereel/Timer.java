@@ -5,6 +5,14 @@ public class Timer {
     private int scheduledTime = -1;
     private Runnable scheduledCommand;
 
+    public Timer(){
+
+    }
+
+    public Timer(int i) {
+        this.time = i;
+    }
+
     public void resetTimer() {
         this.time = 0;
     }

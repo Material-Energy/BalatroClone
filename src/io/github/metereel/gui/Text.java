@@ -21,7 +21,7 @@ public class Text {
     }
 
     public Text(String text, int size){
-        this(text, app.color(0), size);
+        this(text, app.color(255), size);
     }
 
     public Text(String text, int textCol, int size){

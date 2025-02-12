@@ -7,6 +7,7 @@ import io.github.metereel.gui.Text;
 import java.util.Objects;
 
 import static io.github.metereel.Constants.*;
+import static processing.core.PApplet.radians;
 
 public class PlayingCard extends Card{
     private final Deck deck;
@@ -81,7 +82,8 @@ public class PlayingCard extends Card{
         triggered = true;
 
         scorer.addChips(this.getChips());
-        this.setSize(1.4f);
+        this.setSize(1.65f);
+        this.setRotation(radians(5));
         setIgnore(true);
     }
 

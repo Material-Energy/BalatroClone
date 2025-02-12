@@ -9,6 +9,8 @@ import static io.github.metereel.Constants.HUD;
 import static io.github.metereel.Constants.handLevels;
 import static io.github.metereel.Helper.drawBubble;
 import static io.github.metereel.Main.APP;
+import static io.github.metereel.gui.HudDisplay.BLUE;
+import static io.github.metereel.gui.HudDisplay.RED;
 
 
 public class Scorer {
@@ -79,19 +81,17 @@ public class Scorer {
     }
 
     public void display(HandType handType){
+        display(handType, false);
+    }
+
+    public void display(HandType handType, boolean override){
         if (HUD.getDeck().getSelectedAmt() >= 1)
             setBaseScore(handType, handLevels.get(handType));
-
         PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * 0.245f);
         PVector multPos = new PVector(APP.width * 0.2f, APP.height * 0.245f);
 
-        PVector scoreSize = new PVector(75, 50);
-        drawBubble(APP.color(172, 50, 50), multPos, scoreSize, 5);
-        drawBubble(APP.color(0, 148, 255), chipsPos, scoreSize, 5);
-        new Text("X", APP.color(255), 25)
-                .display(new PVector(APP.width * .15f, APP.height * .245f), 0.0f);
 
-        if (HUD.getDeck().getSelectedAmt() < 1 && !HUD.currentlyPlaying()) {
+        if ((HUD.getDeck().getSelectedAmt() < 1 && !HUD.currentlyPlaying()) || override) {
             new Text("0", APP.color(255), 25)
                     .display(chipsPos, 0.0f);
             new Text("0", APP.color(255), 25)
@@ -105,5 +105,17 @@ public class Scorer {
                 .display(chipsPos, 0.0f);
         new Text(format(false), APP.color(255), 25)
                 .display(multPos, 0.0f);
+    }
+
+    public void drawBubbles() {
+        PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * 0.245f);
+        PVector multPos = new PVector(APP.width * 0.2f, APP.height * 0.245f);
+
+        PVector scoreSize = new PVector(75, 50);
+        drawBubble(RED, multPos, scoreSize, 5);
+        drawBubble(BLUE, chipsPos, scoreSize, 5);
+
+        new Text("X", RED, 30)
+                .display(new PVector(APP.width * .15f, APP.height * .245f), 0.0f);
     }
 }

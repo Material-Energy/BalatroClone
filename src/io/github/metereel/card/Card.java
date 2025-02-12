@@ -5,16 +5,21 @@ import io.github.metereel.sprites.Sprite;
 import io.github.metereel.gui.Text;
 import processing.core.PVector;
 
+import java.util.Random;
+
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
 import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
-import static processing.core.PApplet.*;
 import static processing.core.PVector.*;
 
 public abstract class Card {
+    private final Random random = new Random();
+    private final float CARD_CYCLE = (float) random.nextInt(48, 72);
+
     private final Timer shakingTimer = new Timer();
     private final Timer lerpTimer = new Timer();
+    private final Timer floatTimer = new Timer(random.nextInt((int) (20 * CARD_CYCLE)));
 
     private final Text name;
     // private Lore description;
@@ -118,9 +123,14 @@ public abstract class Card {
     public abstract void updateSprite();
 
     public void updateTargetPosition(){
-        if (targetPos.dist(pos) <= 0.1f) hasTarget = false;
+        if (targetPos.dist(pos) <= 0.1f) {
+            hasTarget = false;
+        }
         if (hasTarget()) {
             lerpTimer.incrementTimer();
+            if (lerpTimer.getTime() / (float) translationTime > 1){
+                lerpTimer.resetTimer();
+            }
             PVector delta = lerp(startPos, targetPos, lerpTimer.getTime() / (float) translationTime);
 
             setPos(delta.x, delta.y);
@@ -132,8 +142,8 @@ public abstract class Card {
 
         boolean withinCard = withinBounds(new PVector(APP.mouseX, APP.mouseY),
                 pos,
-                CARD_WIDTH * getSize(),
-                CARD_HEIGHT * getSize());
+                CARD_WIDTH,
+                CARD_HEIGHT);
         boolean noHovering = hoveringCard == null || hoveringCard == this;
         return noHovering && withinCard && getState() != CardState.DRAGGING;
     }
@@ -143,19 +153,17 @@ public abstract class Card {
 
         if (isSelected()){
             this.setRotation(0.0f);
-            this.setSize(1.2f);
+            this.setSize(1.45f);
         }
 
         if (isHovering()){
             if (!isSelected()){
-                this.setRotation(radians(10.0f));
-                this.setSize(1.2f);
+                this.setSize(1.45f);
             } else {
-                this.setSize(1.4f);
+                this.setSize(1.6f);
             }
         } else if (!isSelected()){
-            this.setSize(1.0f);
-            this.setRotation(0.0f);
+            this.setSize(1.25f);
         }
     }
 
@@ -164,9 +172,24 @@ public abstract class Card {
         updateStatus();
     }
 
+    public void drawShadow(){
+        APP.pushMatrix();
+        PVector translateTo = this.getPos().add(-10, +10);
+        APP.translate(translateTo.x, translateTo.y);
+        APP.rotate(withTilt(floatTimer, getRotation(), 3, CARD_CYCLE));
+        APP.scale(this.getSize());
+        drawBubble(APP.color(30), new PVector(0, 0), new PVector(CARD_WIDTH, CARD_HEIGHT), 5);
+        APP.popMatrix();
+    }
+
     public void display(){
 
         float rot = getRotation();
+        if (getState() == CardState.IDLE) {
+            floatTimer.incrementTimer();
+            rot = withTilt(floatTimer, rot, 3, CARD_CYCLE);
+        }
+
         if (isShaking){
             rot = withTilt(shakingTimer, rot, 15, 0.25f);
         } else {
@@ -181,11 +204,18 @@ public abstract class Card {
 
     @Override
     public String toString() {
-        return STR."\{name}{pos = \{pos}, targetPos = \{targetPos}, size = \{size}}";
+        return STR."\{name}{pos = \{pos}, targetPos = \{targetPos}, startPos = \{startPos}, size = \{size}}";
     }
 
     public void shakeFor(int i) {
         this.isShaking = true;
         shakingTimer.schedule(i, () -> this.isShaking = false);
+    }
+
+    public void displayName() {
+    }
+
+    public boolean isIgnoring() {
+        return this.ignore;
     }
 }

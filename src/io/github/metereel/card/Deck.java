@@ -16,7 +16,7 @@ import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
 
 public class Deck {
-    public static final float AXIS = 0.5f * APP.width;
+    public static final float AXIS = 0.6f * APP.width;
     private static final int MAX_SELECTED = 5;
     private final String deckType;
 
@@ -26,6 +26,10 @@ public class Deck {
     private final ArrayList<PlayingCard> playingDeck = new ArrayList<>();
     private final ArrayList<PlayingCard> currentHand = new ArrayList<>();
     private int maxHandSize = 8;
+    private int maxHands = 4;
+    private int maxDiscards = 3;
+    private int hands;
+    private int discards;
 
     private final ArrayList<PlayingCard> selectedCards = new ArrayList<>();
 
@@ -52,7 +56,8 @@ public class Deck {
                 String cardType = STR."\{rank} \{suit}";
 
                 PlayingCard card = new PlayingCard(this, new Text(STR."\{rank} of \{suit}"), deckType, "Card Empty", cardType);
-                card.setPos(this.pos.x + offset, this.pos.y - offset);
+                card.setPos(this.pos.x + 5.2f - offset, this.pos.y - 5.2f + offset);
+                card.tick();
                 offset += 0.1f;
 
                 currentDeck.add(card);
@@ -67,6 +72,8 @@ public class Deck {
     public void setPlayingDeck(){
         this.playingDeck.clear();
         this.playingDeck.addAll(this.currentDeck);
+        this.discards = this.maxDiscards;
+        this.hands = this.maxHands;
 
         Collections.shuffle(this.playingDeck);
         this.playingDeck.forEach(card -> card.setState(CardState.DRAWING));
@@ -82,7 +89,15 @@ public class Deck {
     }
 
     public void clearHand(){
-        currentHand.clear();
+        discard(currentHand);
+    }
+
+    public int getHands(){
+        return this.hands;
+    }
+
+    public int getDiscards(){
+        return this.discards;
     }
 
     public void fillHand() {
@@ -103,23 +118,23 @@ public class Deck {
     }
 
     public float calculateHandPos(int index, int totalCards){
-        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(AXIS), Math.abs(AXIS - APP.width)));
+        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(AXIS - APP.width * 0.05f), Math.abs(AXIS - APP.width * 0.95f)));
     }
 
     public void displayHand(){
-        float x;
-        float y = HudDisplay.HAND_Y;
+        float baseX;
+        float baseY = HudDisplay.HAND_Y;
 
         int displayedCards = currentHand.size();
 
         for (int i = 0; i < displayedCards; i++) {
             Card card = currentHand.get(i);
 
-            x = calculateHandPos(i, displayedCards);
+            baseX = calculateHandPos(i, displayedCards - 1);
 
             CardState state = card.getState();
             if (state == CardState.DRAWING) {
-                if (card.getPos().dist(new PVector(x, y)) >= 0.1f) card.setTargetPos(x, y, 10);
+                if (card.getPos().dist(new PVector(baseX, baseY)) >= 0.1f) card.setTargetPos(baseX, baseY, 10);
                 if (card.isFlipped() && card.lerpProgress() > 0.9f) card.flip();
 
                 if (!card.hasTarget()){
@@ -127,10 +142,12 @@ public class Deck {
                 }
             }
             else if (state == CardState.IDLE) {
-                card.setPos(x, y);
+                card.setPos(baseX, baseY);
             }
             if (card.isFlipped() && card.lerpProgress() > 0.5f) card.flip();
         }
+        currentHand.forEach(Card::drawShadow);
+        selectedCards.forEach(Card::drawShadow);
 
         currentHand.forEach(Card::display);
         selectedCards.forEach(Card::display);
@@ -139,15 +156,14 @@ public class Deck {
 
     public void displayDiscard(){
         discardPile.forEach(card -> {
-            if (card.getState() == CardState.DISCARDING) return;
+            if (card.getState() == CardState.DISCARDING) {
+                card.flip();
+                return;
+            }
             if (card.getPos().x >= APP.width) {
                 card.setState(CardState.DISCARDING);
-            } else if (card.getPos().y <= HAND_BOX_TOP - CARD_WIDTH && !card.isFlipped()){
-                card.flip();
-            } else if (card.getPos().y <= HAND_BOX_TOP - CARD_WIDTH){
-                card.setTargetPos(APP.width + 20, HAND_BOX_TOP - CARD_WIDTH, 4);
             } else {
-                card.setTargetPos(card.getPos().x, HAND_BOX_TOP - CARD_WIDTH, 2);
+                card.setTargetPos(card.getPos().x, HAND_BOX_TOP - CARD_WIDTH, 5);
             }
             card.display();
         });
@@ -205,6 +221,7 @@ public class Deck {
     }
 
     public void discardSelected() {
+        this.discards--;
         discardPile.addAll(selectedCards);
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
@@ -216,6 +233,7 @@ public class Deck {
 
     public ArrayList<PlayingCard> playHand(){
         ArrayList<PlayingCard> playedHand = new ArrayList<>(selectedCards);
+        this.hands--;
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
         return playedHand;

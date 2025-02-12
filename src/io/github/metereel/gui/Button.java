@@ -50,4 +50,17 @@ public class Button {
     public void setPressed(boolean b) {
         this.isPressed = b;
     }
+
+    public PVector getPos() {
+        return this.pos.copy();
+    }
+
+    public void setPos(float x, float y){
+        this.pos.x = x;
+        this.pos.y = y;
+    }
+
+    public void addArg(String arg) {
+        text.addArg(arg);
+    }
 }
