@@ -4,6 +4,8 @@ import io.github.metereel.gui.Scorer;
 
 import java.util.ArrayList;
 
+import static processing.core.PApplet.println;
+
 public class Trigger {
     private int triggersLeft = 1;
     private int currentTrigger = 0;
@@ -20,20 +22,27 @@ public class Trigger {
 
     public void addTrigger(Score score, int index){
         if (score.hasNoEffect()) return;
-        this.triggerOrder.add(index, score);
+        while (index >= triggerOrder.size()){
+            triggerOrder.add(Score.EMPTY);
+        }
+        triggerOrder.set(index, score);
     }
 
     public void removeTrigger(int index){
         this.triggerOrder.remove(index);
     }
 
-    public void triggerNext(Scorer scorer){
-        triggerOrder.get(currentTrigger).score(scorer);
+    private void moveToNext(){
         currentTrigger++;
         if (currentTrigger == triggerOrder.size()){
             this.triggersLeft--;
             this.currentTrigger = 0;
         }
+    }
+
+    public void triggerNext(Scorer scorer){
+        triggerOrder.get(currentTrigger).score(scorer);
+        moveToNext();
     }
 
     public void reset(){
@@ -47,5 +56,13 @@ public class Trigger {
 
     public int getTriggersLeft(){
         return triggersLeft;
+    }
+
+    public Score getCurrentTrigger() {
+        return triggerOrder.get(currentTrigger);
+    }
+
+    public void skip() {
+        moveToNext();
     }
 }

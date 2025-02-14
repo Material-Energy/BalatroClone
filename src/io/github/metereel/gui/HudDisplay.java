@@ -8,7 +8,8 @@ import processing.core.PVector;
 
 import static io.github.metereel.Constants.CARD_HEIGHT;
 import static io.github.metereel.Constants.CARD_WIDTH;
-import static io.github.metereel.Game.*;
+import static io.github.metereel.Game.inBlind;
+import static io.github.metereel.gui.ScorerHelper.*;
 import static io.github.metereel.Helper.*;
 import static io.github.metereel.Main.APP;
 
@@ -275,6 +276,7 @@ public class HudDisplay {
             Button blindButton = blindButtons[currentBlind];
             if (blindButton.checkClicked()){
                 inBlind = true;
+                currentDeck.fillHand();
             }
         }
     }
@@ -295,7 +297,7 @@ public class HudDisplay {
 
         currentDeck.tick();
         if (playedHand != null){
-            Game.scoreHand();
+            ScorerHelper.scoreHand();
         }
     }
 

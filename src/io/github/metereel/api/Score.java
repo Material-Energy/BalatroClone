@@ -8,6 +8,7 @@ import static processing.core.PApplet.println;
 
 
 public class Score {
+    public static final Score EMPTY = new Score(Type.NO_SCORE, 0.0f);
     private final Type scoreType;
     private final float scoreAmt;
 
@@ -23,6 +24,42 @@ public class Score {
 
     public boolean hasNoEffect() {
         return scoreType == Type.NO_SCORE;
+    }
+
+    @Override
+    public String toString() {
+        String scoringType = "No Effect!";
+        if (scoreType == Type.ADD_CHIPS || scoreType == Type.POW_CHIPS){
+            scoringType = "Chips";
+        } else if (!hasNoEffect()){
+            scoringType = "Mult";
+        }
+
+        String symbol = "";
+        if (scoreType == Type.POW_CHIPS || scoreType == Type.POW_MULT){
+            symbol = "^";
+        } else if (scoreType == Type.TIMES_MULT){
+            symbol = "x";
+        } else if (scoreType == Type.ADD_CHIPS || scoreType == Type.ADD_MULT){
+            symbol = "+";
+        }
+
+        String score = "";
+        if (((int) scoreAmt) * 10 == Math.round(scoreAmt * 10)){
+            score += ((int) scoreAmt);
+        } else {
+            score += scoreAmt;
+        }
+
+        return symbol + score + " " + scoringType;
+    }
+
+    public boolean isChips(){
+        return this.scoreType == Type.ADD_CHIPS || this.scoreType == Type.POW_CHIPS;
+    }
+
+    public boolean isMult(){
+        return this.scoreType == Type.ADD_MULT || this.scoreType == Type.TIMES_MULT || this.scoreType == Type.POW_MULT;
     }
 
     public enum Type {

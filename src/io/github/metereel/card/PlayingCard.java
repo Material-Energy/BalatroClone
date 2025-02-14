@@ -68,6 +68,9 @@ public class PlayingCard extends Card{
     @Override
     protected void addTriggers() {
         trigger.addTrigger(new Score(Score.Type.ADD_CHIPS, getChips()), BASE_CHIPS);
+        trigger.addTrigger(new Score(Score.Type.TIMES_MULT, 3), 3);
+        trigger.addTrigger(new Score(Score.Type.POW_CHIPS, 1.3f), 4);
+        trigger.addTrigger(new Score(Score.Type.POW_MULT, 1.1f), 5);
     }
 
     public void updateSprite(){
@@ -80,13 +83,14 @@ public class PlayingCard extends Card{
                 float red = APP.red(color);
                 float green = APP.green(color);
                 float blue = APP.blue(color);
-                red = Math.max(0, red - 40);
-                green = Math.max(0, green - 40);
+
+                int deltaBlue = 40;
+
+                red = Math.max(0, red - deltaBlue);
+                green = Math.max(0, green - deltaBlue);
                 return APP.color(red, green, blue, alpha);
             });
         }
-
-        println(cardFront.getImage().pixels);
 
 
         this.cardBack = CARD_BACKS.getSprite(deckType);
@@ -121,6 +125,14 @@ public class PlayingCard extends Card{
 
     public void onDraw(){
         this.setRotation(radians(random.nextInt(-2, 2)));
+    }
+
+    public Score getCurrentTrigger() {
+        return this.trigger.getCurrentTrigger();
+    }
+
+    public void skipTrigger() {
+        this.trigger.skip();
     }
 
 

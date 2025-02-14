@@ -1,5 +1,6 @@
 package io.github.metereel.card;
 
+import io.github.metereel.Timer;
 import io.github.metereel.api.Edition;
 import io.github.metereel.gui.HudDisplay;
 import io.github.metereel.gui.Text;
@@ -15,6 +16,7 @@ import static io.github.metereel.Helper.getHand;
 import static io.github.metereel.gui.HudDisplay.HAND_BOX_TOP;
 import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Main.APP;
+import static io.github.metereel.gui.ScorerHelper.currentlyPlayingHand;
 
 public class Deck {
     public static final float AXIS = 0.6f * APP.width;
@@ -22,6 +24,7 @@ public class Deck {
     private final String deckType;
 
     private final ArrayList<PlayingCard> currentDeck = new ArrayList<>();
+    private final Timer drawCooldown = new Timer();
 
     private final ArrayList<PlayingCard> discardPile = new ArrayList<>();
     private final ArrayList<PlayingCard> playingDeck = new ArrayList<>();
@@ -118,6 +121,7 @@ public class Deck {
                 return -Integer.compare(rank1 * 10 + suit1, rank2 * 10 + suit2);
             });
         }
+        currentHand.forEach(playingCard -> playingCard.setState(CardState.DRAWING));
     }
 
     public float calculateHandPos(int index, int totalCards){
@@ -173,7 +177,13 @@ public class Deck {
     }
 
     public void tick(){
-        fillHand();
+        if (currentlyPlayingHand) {
+            drawCooldown.resetTimer();
+        }
+        drawCooldown.incrementTimer();
+        if (drawCooldown.getTimeWithCycle(100) == 0) {
+            fillHand();
+        }
 
         discardPile.forEach(Card::tick);
     }
@@ -228,6 +238,8 @@ public class Deck {
         discardPile.addAll(selectedCards);
         selectedCards.forEach(PlayingCard::onDiscard);
         currentHand.removeAll(selectedCards);
+        drawCooldown.resetTimer();
+        currentHand.forEach(playingCard -> playingCard.setState(CardState.DRAWING));
         selectedCards.clear();
     }
 

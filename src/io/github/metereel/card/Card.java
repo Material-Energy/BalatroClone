@@ -192,7 +192,7 @@ public abstract class Card {
         APP.pushMatrix();
         PVector translateTo = this.getPos().add(-10, +10);
         APP.translate(translateTo.x, translateTo.y);
-        APP.rotate(withTilt(floatTimer, getRotation(), 3, CARD_CYCLE));
+        APP.rotate(withTilt(floatTimer, getRotation(), 3, CARD_CYCLE, true));
         APP.scale(this.getSize());
         drawBubble(APP.color(30, 75), new PVector(0, 0), new PVector(CARD_WIDTH, CARD_HEIGHT), 5);
         APP.popMatrix();
@@ -203,11 +203,11 @@ public abstract class Card {
         float rot = getRotation();
         if (getState() == CardState.IDLE) {
             floatTimer.incrementTimer();
-            rot = withTilt(floatTimer, rot, 3, CARD_CYCLE);
+            rot = withTilt(floatTimer, rot, 3, CARD_CYCLE, true);
         }
 
         if (isShaking){
-            rot = withTilt(shakingTimer, rot, 15, 0.25f);
+            rot = withTilt(shakingTimer, rot, 15, 0.25f, true);
         } else {
             shakingTimer.resetTimer();
         }

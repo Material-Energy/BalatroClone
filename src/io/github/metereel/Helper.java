@@ -31,12 +31,12 @@ public class Helper {
         }
     }
 
-    public static float withTilt(Timer timer, float currentDeg, float maxTiltDeg){
-        return withTilt(timer, currentDeg, maxTiltDeg, 1.0f);
+    public static float withTilt(Timer timer, float currentDeg, float maxTiltDeg, boolean incrementTime){
+        return withTilt(timer, currentDeg, maxTiltDeg, 1.0f, incrementTime);
     }
 
-    public static float withTilt(Timer timer, float currentDeg, float maxTiltDeg, float cycle){
-        timer.incrementTimer();
+    public static float withTilt(Timer timer, float currentDeg, float maxTiltDeg, float cycle, boolean incrementTime){
+        if (incrementTime) timer.incrementTimer();
         int time = timer.getTimeWithCycle((int) (cycle * maxTiltDeg * 4));
         return radians(currentDeg + Math.abs((time / cycle) % (maxTiltDeg * 4) - maxTiltDeg * 2) - maxTiltDeg);
     }
@@ -217,7 +217,7 @@ public class Helper {
             default -> {
                 outputHand.addAll(hand);
                 outputHand.sort(Comparator.comparingInt(card -> RANKS.indexOf(card.getRank())));
-                outputHand.removeIf(playingCard -> outputHand.indexOf(playingCard) != 0);
+                outputHand.removeIf(playingCard -> outputHand.indexOf(playingCard) != outputHand.size() - 1);
                 return outputHand;
             }
         }

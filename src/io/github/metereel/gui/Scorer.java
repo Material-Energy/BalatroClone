@@ -5,13 +5,17 @@ import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 import processing.core.PVector;
 
+import java.math.RoundingMode;
+
 import static io.github.metereel.Constants.HUD;
 import static io.github.metereel.Constants.handLevels;
-import static io.github.metereel.Game.currentlyPlayingHand;
+import static io.github.metereel.Helper.withTilt;
+import static io.github.metereel.gui.ScorerHelper.currentlyPlayingHand;
 import static io.github.metereel.Helper.drawBubble;
 import static io.github.metereel.Main.APP;
 import static io.github.metereel.gui.HudDisplay.BLUE;
 import static io.github.metereel.gui.HudDisplay.RED;
+import static io.github.metereel.gui.ScorerHelper.playingTimer;
 
 
 public class Scorer {
@@ -20,6 +24,9 @@ public class Scorer {
 
     private Apfloat currentScore;
     private final Apfloat requiredScore;
+
+    private boolean tiltChips = false;
+    private boolean tileMult = false;
 
     public Scorer(Apfloat anteScore){
         chips = Apfloat.ZERO;
@@ -38,22 +45,32 @@ public class Scorer {
     public void addChips(double amount){
         Apfloat addAmt = new Apfloat(String.valueOf(amount));
         chips = chips.add(addAmt);
+        tiltChips = true;
+        tileMult = false;
     }
 
     public void powChips(double amount){
-        chips = ApfloatMath.pow(chips, new Apfloat(String.valueOf(amount)));
+        chips = ApfloatMath.pow(chips, new Apfloat(String.valueOf(amount)).precision(10)).precision(10);
+        tiltChips = true;
+        tileMult = false;
     }
 
     public void addMult(double amount){
         mult = mult.add(new Apfloat(String.valueOf(amount)));
+        tiltChips = false;
+        tileMult = true;
     }
 
     public void timesMult(double amount){
         mult = mult.multiply(new Apfloat(String.valueOf(amount)));
+        tiltChips = false;
+        tileMult = true;
     }
 
     public void powMult(double amount){
         mult = ApfloatMath.pow(mult, new Apfloat(String.valueOf(amount)));
+        tiltChips = false;
+        tileMult = true;
     }
 
     private void updateCurrentScore() {
@@ -67,14 +84,14 @@ public class Scorer {
 
     public String format(boolean isChips){
         if (isChips) {
-            if (chips.scale() <= 7) {
-                return chips.toString(true);
+            if (chips.scale() <= 6) {
+                return ApfloatMath.roundToPlaces(chips,1, RoundingMode.HALF_EVEN).toString(true);
             } else {
                 return chips.precision(3).toString();
             }
         } else {
-            if (mult.scale() <= 7) {
-                return mult.toString(true);
+            if (mult.scale() <= 6) {
+                return ApfloatMath.roundToPlaces(mult,1, RoundingMode.HALF_EVEN).toString(true);
             } else {
                 return mult.precision(3).toString();
             }
@@ -102,10 +119,19 @@ public class Scorer {
             mult = Apfloat.ZERO;
             return;
         }
-        new Text(format(true), APP.color(255), 25)
-                .display(chipsPos, 0.0f);
-        new Text(format(false), APP.color(255), 25)
-                .display(multPos, 0.0f);
+
+        float rotChips = 0.0f;
+        float rotMult = 0.0f;
+        if (tiltChips){
+            rotChips = withTilt(playingTimer, 0.0f, 15.0f, 0.25f, false);
+        } else if (tileMult){
+            rotMult = withTilt(playingTimer, 0.0f, 15.0f, 0.25f, false);
+        }
+
+        new Text(format(true), APP.color(255), 25 - format(true).length())
+                .display(chipsPos, rotChips);
+        new Text(format(false), APP.color(255), 25 - format(true).length())
+                .display(multPos, rotMult);
     }
 
     public void drawBubbles() {
