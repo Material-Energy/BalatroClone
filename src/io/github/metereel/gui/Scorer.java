@@ -9,6 +9,7 @@ import java.math.RoundingMode;
 
 import static io.github.metereel.Constants.HUD;
 import static io.github.metereel.Constants.handLevels;
+import static io.github.metereel.Game.inBlind;
 import static io.github.metereel.Helper.withTilt;
 import static io.github.metereel.gui.ScorerHelper.currentlyPlayingHand;
 import static io.github.metereel.Helper.drawBubble;
@@ -39,7 +40,6 @@ public class Scorer {
     public void setBaseScore(HandType hand, int level){
         chips = new Apfloat(String.valueOf(hand.getChips(level)));
         mult = new Apfloat(String.valueOf(hand.getMult(level)));
-        updateCurrentScore();
     }
 
     public void addChips(double amount){
@@ -144,5 +144,32 @@ public class Scorer {
 
         new Text("X", RED, 30)
                 .display(new PVector(APP.width * .15f, APP.height * .245f), 0.0f);
+    }
+
+    public Apfloat getRequirement() {
+        return this.requiredScore;
+    }
+
+    public void drawRequirement() {
+        String requirement;
+        if (requiredScore.scale() <= 6) {
+            requirement = ApfloatMath.roundToPlaces(requiredScore,1, RoundingMode.HALF_EVEN).toString(true);
+        } else {
+            requirement = requiredScore.precision(3).toString();
+        }
+
+        String currentScore;
+        if (this.currentScore.scale() <= 6) {
+            currentScore = ApfloatMath.roundToPlaces(this.currentScore,1, RoundingMode.HALF_EVEN).toString(true);
+        } else {
+            currentScore = this.currentScore.precision(3).toString();
+        }
+
+        if (inBlind) {
+            new Text(requirement, APP.color(255), 20)
+                    .display(new PVector(APP.width * .15f, APP.height * .12f), 0.0f);
+            new Text(currentScore, APP.color(255), 20)
+                    .display(new PVector(APP.width * .15f, APP.height * .15f), 0.0f);
+        }
     }
 }

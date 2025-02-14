@@ -3,6 +3,7 @@ package io.github.metereel.gui;
 import io.github.metereel.Game;
 import io.github.metereel.card.*;
 import org.apfloat.Apfloat;
+import org.apfloat.ApfloatMath;
 import processing.core.PVector;
 
 
@@ -112,8 +113,12 @@ public class HudDisplay {
             if (currentBlind == i){
                 blindButton.addArg("Select");
             } else {
-                blindButton.addArg("Upcoming");
                 blindButton.setPressed(true);
+                if (currentBlind < i) {
+                    blindButton.addArg("Upcoming");
+                } else {
+                    blindButton.addArg("Beaten");
+                }
             }
             blindButton.display();
         }
@@ -182,6 +187,7 @@ public class HudDisplay {
                 30);
         drawBubble(APP.color(50), handTypePos, handTypeSize, 5);
         scorer.drawBubbles();
+        scorer.drawRequirement();
     }
 
     private void drawPlayedHand() {
@@ -304,5 +310,17 @@ public class HudDisplay {
 
     public Scorer getScorer() {
         return this.scorer;
+    }
+
+    public void blindWon() {
+        currentDeck.wonBlind();
+        scorer = new Scorer(ApfloatMath.pow(scorer.getRequirement().precision(3), new Apfloat("1.5")).precision(3));
+        inBlind = false;
+        currentBlind++;
+
+        if (currentBlind > 2){
+            ante++;
+            currentBlind = 0;
+        }
     }
 }

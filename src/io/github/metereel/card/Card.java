@@ -27,7 +27,7 @@ public abstract class Card {
     // private Lore description;
     Sprite cardFront;
     Sprite cardBack;
-    private boolean isFlipped = false;
+    boolean isFlipped = false;
     private boolean isShaking = false;
     private boolean isSelected = false;
     private boolean ignore = false;
@@ -233,5 +233,11 @@ public abstract class Card {
 
     public boolean isIgnoring() {
         return this.ignore;
+    }
+
+    protected void resetTimers() {
+        floatTimer.resetTimer();
+        shakingTimer.resetTimer();
+        lerpTimer.resetTimer();
     }
 }

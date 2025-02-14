@@ -135,6 +135,15 @@ public class PlayingCard extends Card{
         this.trigger.skip();
     }
 
+    public void reset() {
+        this.setRotation(0.0f);
+        this.setSize(1.0f);
+        this.isFlipped = false;
+        resetTrigger();
+        this.resetTimers();
+        this.setSelected(false);
+    }
+
 
     enum RankChips {
         Ace("Ace", 11),

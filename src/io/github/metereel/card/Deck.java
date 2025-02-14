@@ -95,6 +95,7 @@ public class Deck {
 
     public void clearHand(){
         discard(currentHand);
+        currentHand.clear();
     }
 
     public int getHands(){
@@ -262,5 +263,15 @@ public class Deck {
 
     public void stopDragging(PlayingCard card) {
         card.setState(CardState.DRAWING);
+    }
+
+    public void wonBlind() {
+        discardPile.clear();
+        setPlayingDeck();
+
+        playingDeck.forEach( card -> {
+                card.setPos(this.pos.x + 5.2f - playingDeck.indexOf(card) * 0.1f, this.pos.y - 5.2f + playingDeck.indexOf(card) * 0.1f);
+                card.reset();
+        });
     }
 }

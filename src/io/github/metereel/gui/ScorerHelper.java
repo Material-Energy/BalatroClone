@@ -1,5 +1,6 @@
 package io.github.metereel.gui;
 
+import io.github.metereel.Game;
 import io.github.metereel.Timer;
 import io.github.metereel.api.ScorePopup;
 import io.github.metereel.card.Card;
@@ -23,6 +24,7 @@ public class ScorerHelper {
     public static final Timer playingTimer = new Timer();
 
     private static ScorePopup scoreDisplay;
+    private static boolean willEnd;
 
     public static void scoreHand() {
         playedHand.forEach(Card::tick);
@@ -30,6 +32,15 @@ public class ScorerHelper {
         playingTimer.incrementTimer();
         if (scoreDisplay != null) {
             scoreDisplay.display();
+        }
+
+        if (playingTimer.getTimeWithCycle(CYCLE_TIME * 4) == 0){
+            if (willEnd){
+                playedHand = null;
+                HUD.getDeck().clearHand();
+                HUD.blindWon();
+                return;
+            }
         }
 
         if (playingTimer.getTimeWithCycle(CYCLE_TIME) == CYCLE_TIME / 2){
@@ -40,11 +51,14 @@ public class ScorerHelper {
             ArrayList<PlayingCard> temp = new ArrayList<>(playedHand);
             temp.removeIf(playingCard -> !playingCard.isSelected());
 
-            if (temp.getLast().finishedTriggering()){
+            if (temp.isEmpty() || temp.getLast().finishedTriggering()){
+                playedHand.forEach(card -> card.setSelected(false));
                 currentlyPlayingHand = false;
                 HUD.getDeck().discard(playedHand);
-                playedHand = null;
                 scoreDisplay = null;
+
+                if (HUD.getScorer().hasWon())
+                    willEnd = true;
             } else {
                 for (PlayingCard card : playedHand) {
                     if (!card.isSelected()) continue;
@@ -75,6 +89,7 @@ public class ScorerHelper {
         playingTimer.resetTimer();
         CYCLE_TIME = 20;
 
+        willEnd = false;
         ArrayList<PlayingCard> activeCards = activeCards(playingCards);
         for (PlayingCard card : playedHand){
             card.setSelected(false);
