@@ -3,8 +3,18 @@ package io.github.metereel;
 import io.github.metereel.card.HandType;
 import io.github.metereel.card.PlayingCard;
 import io.github.metereel.sprites.Sprite;
+import processing.awt.PImageAWT;
+import processing.core.PFont;
+import processing.core.PImage;
 import processing.core.PVector;
+import processing.opengl.PGraphicsOpenGL;
+import processing.opengl.PShader;
 
+import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -16,10 +26,49 @@ import static io.github.metereel.card.HandType.*;
 import static processing.core.PApplet.*;
 
 public class Helper {
+
+    public static PFont fontFromString(String filename, int fontSize){
+        String full = "resources/font/" + filename;
+        println("Requesting " + full);
+        BufferedInputStream stream = new BufferedInputStream(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(full)));
+
+        Font base;
+        try {
+            base = Font.createFont(0, stream);
+
+            return new PFont(base.deriveFont(fontSize * (float) APP.sketchPixelDensity()), true, null, true, APP.sketchPixelDensity());
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static PImage imageFromString(String filename){
+        String full = "resources/images/" + filename;
+        println("Requesting " + full);
+        BufferedInputStream stream = new BufferedInputStream(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(full)));
+        byte[] bytes = loadBytes(stream);
+
+        Image image = new ImageIcon(bytes).getImage();
+        PImage img = new PImageAWT(image);
+
+        img.parent = APP;
+        return img;
+    }
+
+    public static PShader shaderFromString(String filename){
+        String full = "resources/shader/" + filename;
+        println("Requesting " + full);
+        URL url = ClassLoader.getSystemResource(full);
+
+        return new PShader(APP, PGraphicsOpenGL.class.getResource("/processing/opengl/shaders/TexVert.glsl"), url);
+
+    }
+
+
     public static void loadFaces(){
         for (int i = 0; i < RANKS.size(); i++){
             for (int j = 0; j < SUITS_TEXTURE.size(); j++){
-                FACES.add(new Sprite(CARD_WIDTH * i, CARD_HEIGHT * j, CARD_WIDTH, CARD_HEIGHT, STR."\{RANKS.get(i)} \{SUITS_TEXTURE.get(j)}"));
+                FACES.add(new Sprite(CARD_WIDTH * i, CARD_HEIGHT * j, CARD_WIDTH, CARD_HEIGHT, RANKS.get(i) + " " + SUITS_TEXTURE.get(j)));
             }
         }
     }

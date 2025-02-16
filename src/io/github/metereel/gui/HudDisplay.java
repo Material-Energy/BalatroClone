@@ -105,7 +105,7 @@ public class HudDisplay {
 
         APP.fill(APP.color(255));
         APP.textSize(15);
-        APP.text(STR."(\{APP.mouseX}, \{APP.mouseY}) \{Math.round(APP.frameRate)} FPS",
+        APP.text("(" + APP.mouseX + ", " + APP.mouseY + ") " + Math.round(APP.frameRate) + " FPS",
                 APP.width / 2.0f,
                 30);
 

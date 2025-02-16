@@ -15,7 +15,6 @@ import static io.github.metereel.Constants.HUD;
 import static io.github.metereel.Helper.activeCards;
 import static io.github.metereel.Javatro.APP;
 import static io.github.metereel.card.Deck.AXIS;
-import static processing.core.PApplet.println;
 
 public class ScorerHelper {
 

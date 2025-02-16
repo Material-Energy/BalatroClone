@@ -3,15 +3,12 @@ package io.github.metereel.sprites;
 import processing.core.PImage;
 import processing.core.PVector;
 
-import static io.github.metereel.Constants.CARD_HEIGHT;
-import static io.github.metereel.Constants.CARD_WIDTH;
-import static processing.core.PApplet.println;
 import static processing.core.PConstants.ARGB;
 
 public class Sprite extends IDisplay {
     private PImage image;
     private PImage spriteSheet;
-    private final float seed = (float) Math.round(Math.random() * 5);;
+    private final float seed = (float) Math.round(Math.random() * 5);
 
     public Sprite(int offsetX, int offsetY, int sizeWidth, int sizeHeight) {
         this(offsetX, offsetY, sizeWidth, sizeHeight, "");
@@ -155,7 +152,4 @@ public class Sprite extends IDisplay {
         return this.image == null;
     }
 
-    public PImage getImage() {
-        return this.image.copy();
-    }
 }

@@ -2,7 +2,6 @@ package io.github.metereel.sprites;
 
 import processing.core.PImage;
 import processing.core.PVector;
-import processing.opengl.PShader;
 
 public class Animation extends IDisplay{
     private int currentFrame = 0;

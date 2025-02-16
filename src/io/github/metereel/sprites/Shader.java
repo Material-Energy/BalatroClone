@@ -1,11 +1,9 @@
 package io.github.metereel.sprites;
 
-import io.github.metereel.Timer;
 import processing.opengl.PShader;
 
+import static io.github.metereel.Helper.*;
 import static io.github.metereel.Javatro.APP;
-import static processing.core.PApplet.println;
-import static processing.core.PApplet.second;
 
 public class Shader {
     private final String filename;
@@ -16,7 +14,9 @@ public class Shader {
     }
 
     public void initialize(){
-        this.shader = APP.loadShader("../resources/shader/" + filename + ".fs");
+//        URL url = asResource("shader", filename + ".fs");
+//        this.shader = APP.loadShader(urlToFilepath(url));
+        shader = shaderFromString(filename + ".fs");
     }
 
     public PShader asShader(){

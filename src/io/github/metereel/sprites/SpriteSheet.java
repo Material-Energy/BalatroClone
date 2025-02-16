@@ -1,18 +1,14 @@
 package io.github.metereel.sprites;
 
-import processing.core.PApplet;
 import processing.core.PImage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static io.github.metereel.Javatro.APP;
-import static processing.core.PApplet.print;
-import static processing.core.PApplet.println;
+import static io.github.metereel.Helper.*;
 
 public class SpriteSheet {
-    private final PApplet app = APP;
 
     ArrayList<IDisplay> sprites = new ArrayList<>();
     PImage spritesheet;
@@ -29,7 +25,7 @@ public class SpriteSheet {
     }
 
     public void load(){
-        spritesheet = app.loadImage("../resources/images/" + file + ".png");
+        spritesheet = imageFromString(file + ".png");
 
         System.out.println("Loading Sprites for " + file);
 
@@ -40,13 +36,12 @@ public class SpriteSheet {
     }
 
     public Sprite getSprite(String name){
-        if (spritesheet == null) spritesheet = app.loadImage("../resources/images/" + file + ".png");
 
         for (IDisplay sprite : sprites){
             if (Objects.equals(sprite.getName(), name) && sprite instanceof Sprite) {
 
                 if (sprite.hasNoImage()) {
-                    println("No image found, attempting replacement");
+                    System.out.println("No image found, attempting replacement");
                     sprite.apply(this.spritesheet.copy());
                 }
                 return (Sprite) sprite.copy();

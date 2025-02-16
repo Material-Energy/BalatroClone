@@ -255,7 +255,7 @@ public abstract class Card {
 
     @Override
     public String toString() {
-        return STR."\{name}{pos = \{pos}, targetPos = \{targetPos}, startPos = \{startPos}, size = \{size}}";
+        return name + "{pos = "+pos + ", targetPos = " + targetPos + " startPos = " + startPos + " size = " + size + "}";
     }
 
     public void shakeFor(int i) {
@@ -264,10 +264,6 @@ public abstract class Card {
     }
 
     public void displayName() {
-    }
-
-    public boolean isIgnoring() {
-        return this.ignore;
     }
 
     protected void resetTimers() {

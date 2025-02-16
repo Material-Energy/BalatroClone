@@ -3,7 +3,6 @@ package io.github.metereel.sprites;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
-import processing.opengl.PShader;
 
 import static io.github.metereel.Javatro.APP;
 

@@ -59,9 +59,9 @@ public class Deck {
         float offset = 0;
         for (String rank: RANKS){
             for (String suit: SUITS){
-                String cardType = STR."\{rank} \{suit}";
+                String cardType = rank + " " + suit;
 
-                PlayingCard card = new PlayingCard(this, new Text(STR."\{rank} of \{suit}"), deckType, "Card Empty", cardType);
+                PlayingCard card = new PlayingCard(this, new Text(rank + " of " + suit), deckType, "Card Empty", cardType);
                 card.setEdition(Edition.FOIL);
 
                 card.setPos(this.pos.x + 5.2f - offset, this.pos.y - 5.2f + offset);

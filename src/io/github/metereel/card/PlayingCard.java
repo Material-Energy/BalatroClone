@@ -5,7 +5,6 @@ import io.github.metereel.api.Enhancement;
 import io.github.metereel.api.Score;
 import io.github.metereel.gui.Scorer;
 import io.github.metereel.gui.Text;
-import io.github.metereel.sprites.Shaders;
 
 import java.util.Objects;
 import java.util.Random;

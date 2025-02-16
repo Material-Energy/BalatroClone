@@ -6,8 +6,8 @@ import processing.core.PVector;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Constants.FACES;
-import static io.github.metereel.Javatro.APP;
-import static io.github.metereel.Javatro.centerWindow;
+import static io.github.metereel.Helper.*;
+import static io.github.metereel.Javatro.*;
 
 public class Game {
     public static boolean inBlind = false;
@@ -28,7 +28,7 @@ public class Game {
         FACES.load();
 
         // Load Font
-        PFont font = APP.createFont("../resources/font/balatro.ttf", 32);
+        PFont font = fontFromString("balatro.ttf", 32);
         APP.noStroke();
         APP.textFont(font);
 
