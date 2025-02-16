@@ -14,8 +14,6 @@ public class Shader {
     }
 
     public void initialize(){
-//        URL url = asResource("shader", filename + ".fs");
-//        this.shader = APP.loadShader(urlToFilepath(url));
         shader = shaderFromString(filename + ".fs");
     }
 
@@ -30,6 +28,6 @@ public class Shader {
     }
 
     public void periodic(){
-        shader.set("timer", APP.millis() / 2000.0f);
+        shader.set("time", APP.millis() / 2000.0f);
     }
 }

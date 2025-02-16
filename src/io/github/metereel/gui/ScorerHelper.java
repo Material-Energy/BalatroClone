@@ -76,8 +76,8 @@ public class ScorerHelper {
                     }
                     if (card.finishedTriggering()) continue;
 
-                    float x = (playedHand.indexOf(card) - playedHand.size() * 0.5f) * APP.width * 0.1f + AXIS;
-                    float y = APP.height * .5f - CARD_HEIGHT * 2;
+                    float x = card.getPos().x;
+                    float y = card.getPos().y - CARD_HEIGHT * 2;
 
                     scoreDisplay = new ScorePopup(new PVector(x, y), 0.0f, card.getCurrentTrigger());
                     card.tryTrigger(HUD.getScorer());
@@ -101,8 +101,8 @@ public class ScorerHelper {
             card.setSelected(false);
             card.setState(CardState.PLAYING);
 
-            float x = (playingCards.indexOf(card) - playingCards.size() * 0.5f) * APP.width * 0.1f + AXIS;
-            card.setTargetPos(x, APP.height * .5f, 10);
+            float x = (playingCards.indexOf(card) + 1 - playingCards.size() * 0.5f) * APP.width * 0.1f + AXIS;
+            card.setTargetPos(x, APP.height * .4f, 25, true);
 
             if (activeCards.contains(card)){
                 card.setSelected(true);

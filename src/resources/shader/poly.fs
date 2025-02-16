@@ -3,7 +3,7 @@ uniform sampler2D texture;
 
 uniform vec2 tex_size;
 uniform vec2 tex_center;
-uniform float timer;
+uniform float time;
 uniform float seed;
 
 float hue(float s, float t, float h)
@@ -59,12 +59,14 @@ vec4 output_pixl(vec4 colour, vec2 pixelCoord) {
     else
     pixelCoord = vec2(-pixelCoord.x, -pixelCoord.y);
 
-    float h = mod((pixelCoord.x + pixelCoord.y) * 2. + timer, 360.);
+    float h = mod((pixelCoord.x + pixelCoord.y) * 2. + time, 360.);
     hsv = vec4(h, max(hsv.g, .5), max(hsv.b, .5), colour.a);
     return RGB(hsv);
 }
 
 void main() {
+    vec2 err_sup = seed + tex_size + tex_center + time;
+
     vec4 col = texture2D(texture, vertTexCoord.st);
 
     vec4 out_col = output_pixl(col, vertTexCoord.st);

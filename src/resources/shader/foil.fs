@@ -3,7 +3,7 @@ uniform sampler2D texture;
 
 uniform vec2 tex_size;
 uniform vec2 tex_center;
-uniform float timer;
+uniform float time;
 uniform float seed;
 
 vec4 output_pixl(vec2 pixelCoord){
@@ -12,7 +12,7 @@ vec4 output_pixl(vec2 pixelCoord){
     pixelCoord = vec2(pixelCoord.x / 1.5f, pixelCoord.y);
 
     float dis = mod(
-        distance(pixelCoord, tex_center) - timer
+        distance(pixelCoord, tex_center) - time
     , shif) / shif;
 
     dis = dis * .5 + .25;
@@ -27,6 +27,8 @@ vec4 output_pixl(vec2 pixelCoord){
 }
 
 void main() {
+    vec2 err_sup = seed + tex_size + tex_center + time;
+
     vec4 col = texture2D(texture, vertTexCoord.st);
 
     vec4 out_col = output_pixl(vertTexCoord.st);

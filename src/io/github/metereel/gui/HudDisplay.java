@@ -3,10 +3,13 @@ package io.github.metereel.gui;
 import io.github.metereel.Game;
 import io.github.metereel.Timer;
 import io.github.metereel.card.*;
+import io.github.metereel.sprites.Shaders;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
 import processing.core.PVector;
 
+
+import java.util.ArrayList;
 
 import static io.github.metereel.Constants.CARD_HEIGHT;
 import static io.github.metereel.Constants.CARD_WIDTH;
@@ -320,6 +323,20 @@ public class HudDisplay {
     }
 
     private void tryPressButtons() {
+        ArrayList<PlayingCard> arrayList = new ArrayList<>(currentDeck.getDeck());
+        boolean hasCard = false;
+        float dist = new PVector(CARD_WIDTH / 2f, CARD_HEIGHT / 2f).dist(new PVector());
+        for (Card card : arrayList){
+            if (card.getPos().dist(new PVector(APP.mouseX, APP.mouseY)) < dist){
+                hasCard = true;
+            }
+        }
+
+
+        if (hasCard){
+            return;
+        }
+
         if (inBlind) {
             boolean hasSelected = currentDeck.getSelectedAmt() > 0;
             if (discardButton.checkClicked() && hasSelected) {
@@ -337,7 +354,6 @@ public class HudDisplay {
             Button blindButton = blindButtons[currentBlind];
             if (blindButton.checkClicked()){
                 inBlind = true;
-                currentDeck.fillHand();
             }
         }
     }

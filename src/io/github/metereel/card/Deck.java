@@ -62,7 +62,7 @@ public class Deck {
                 String cardType = rank + " " + suit;
 
                 PlayingCard card = new PlayingCard(this, new Text(rank + " of " + suit), deckType, "Card Empty", cardType);
-                card.setEdition(Edition.FOIL);
+                card.setEdition(Edition.NEGATIVE);
 
                 card.setPos(this.pos.x + 5.2f - offset, this.pos.y - 5.2f + offset);
                 card.tick();
@@ -112,7 +112,7 @@ public class Deck {
     }
 
     public void fillHand() {
-        while (currentHand.size() < maxHandSize){
+        if (currentHand.size() < maxHandSize){
             if (this.playingDeck.isEmpty()) return;
             currentHand.add(this.playingDeck.removeFirst());
             currentHand.getLast().onDraw();
@@ -156,7 +156,7 @@ public class Deck {
 
             CardState state = card.getState();
             if (state == CardState.DRAWING) {
-                if (card.getPos().dist(new PVector(baseX, baseY)) >= 0.1f) card.setTargetPos(baseX, baseY, 10);
+                if (card.getPos().dist(new PVector(baseX, baseY)) >= 0.1f) card.setTargetPos(baseX, baseY, 20);
                 if (card.isFlipped() && card.lerpProgress() > 0.9f) card.flip();
 
                 if (!card.hasTarget()){
@@ -176,15 +176,18 @@ public class Deck {
     }
 
     public void displayDiscard(){
+        ArrayList<PlayingCard> discardingCards = new ArrayList<>(discardPile);
+        discardingCards.removeIf(card -> card.getState() == CardState.DISCARDING);
+
         discardPile.forEach(card -> {
             if (card.getState() == CardState.DISCARDING) {
-                card.flip();
+                if (!card.isFlipped()) card.flip();
                 return;
             }
             if (card.getPos().x >= APP.width) {
                 card.setState(CardState.DISCARDING);
             } else {
-                card.setTargetPos(APP.width + CARD_WIDTH * 4, HAND_BOX_TOP - CARD_WIDTH, 5 + (selectedCards.contains(card) ? selectedCards.indexOf(card) * 3 : 0));
+                card.setTargetPos(APP.width + CARD_WIDTH * 4, HAND_BOX_TOP - CARD_WIDTH, 15 + (discardingCards.contains(card) ? discardingCards.indexOf(card) * 10 : 0));
             }
             card.display();
         });
@@ -195,7 +198,7 @@ public class Deck {
             drawCooldown.resetTimer();
         }
         drawCooldown.incrementTimer();
-        if (drawCooldown.getTimeWithCycle(100) == 0) {
+        if (drawCooldown.getTimeWithCycle(20) == 0) {
             fillHand();
         }
 
@@ -287,5 +290,9 @@ public class Deck {
                 card.setPos(this.pos.x + 5.2f - playingDeck.indexOf(card) * 0.1f, this.pos.y - 5.2f + playingDeck.indexOf(card) * 0.1f);
                 card.reset();
         });
+    }
+
+    public ArrayList<PlayingCard> getDeck() {
+        return playingDeck;
     }
 }

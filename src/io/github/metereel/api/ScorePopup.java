@@ -39,7 +39,7 @@ public class ScorePopup {
 
         APP.translate(pos.x, pos.y);
         APP.rotate(rotation);
-        APP.square(-10, 0,  -Math.abs(untilExpire.getTime() - 10) + 70);
+        APP.square(0, 0,  -Math.abs(untilExpire.getTime() - 10) + 70);
 
         APP.popMatrix();
 

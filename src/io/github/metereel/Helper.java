@@ -55,13 +55,16 @@ public class Helper {
         return img;
     }
 
-    public static PShader shaderFromString(String filename){
+    public static PShader shaderFromString(String filename, URL vertURL){
         String full = "resources/shader/" + filename;
         println("Requesting " + full);
         URL url = ClassLoader.getSystemResource(full);
 
-        return new PShader(APP, PGraphicsOpenGL.class.getResource("/processing/opengl/shaders/TexVert.glsl"), url);
+        return new PShader(APP, vertURL, url);
+    }
 
+    public static PShader shaderFromString(String filename){
+        return shaderFromString(filename, PGraphicsOpenGL.class.getResource("/processing/opengl/shaders/TexVert.glsl"));
     }
 
 

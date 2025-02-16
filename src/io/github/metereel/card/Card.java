@@ -26,9 +26,9 @@ public abstract class Card {
 
     private final Text name;
     // private Lore description;
-    Sprite cardFront;
-    Sprite cardBack;
-    boolean isFlipped = false;
+    protected Sprite cardFront;
+    protected Sprite cardBack;
+    protected boolean isFlipped = false;
     private boolean isShaking = false;
     private boolean isSelected = false;
     private boolean ignore = false;
@@ -53,8 +53,12 @@ public abstract class Card {
 
     protected abstract void addTriggers();
 
-    public void setTargetPos(float x, float y, int translationTime) {
-        if (hasTarget()) return;
+    public void setTargetPos(float x, float y, int translationTime){
+        setTargetPos(x, y, translationTime, false);
+    }
+
+    public void setTargetPos(float x, float y, int translationTime, boolean override) {
+        if (hasTarget() && !override) return;
         hasTarget = true;
         this.targetPos.x = x;
         this.targetPos.y = y;
