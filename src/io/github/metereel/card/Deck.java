@@ -1,5 +1,6 @@
 package io.github.metereel.card;
 
+import io.github.metereel.Game;
 import io.github.metereel.Timer;
 import io.github.metereel.api.Edition;
 import io.github.metereel.gui.HudDisplay;
@@ -15,7 +16,7 @@ import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.getHand;
 import static io.github.metereel.gui.HudDisplay.HAND_BOX_TOP;
 import static io.github.metereel.gui.HudDisplay.hoveringCard;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static io.github.metereel.gui.ScorerHelper.currentlyPlayingHand;
 
 public class Deck {
@@ -37,7 +38,8 @@ public class Deck {
 
     private final ArrayList<PlayingCard> selectedCards = new ArrayList<>();
 
-    private final PVector pos = new PVector(.9f * APP.width, HudDisplay.HAND_Y);
+    private final PVector pos = new PVector(.9f * APP.width, HudDisplay.HAND_Y + CARD_HEIGHT);
+    private boolean blindEnded;
 
     public Deck(){
         deckType = "Deck Normal";
@@ -61,6 +63,7 @@ public class Deck {
 
                 PlayingCard card = new PlayingCard(this, new Text(STR."\{rank} of \{suit}"), deckType, "Card Empty", cardType);
                 card.setEdition(Edition.FOIL);
+
                 card.setPos(this.pos.x + 5.2f - offset, this.pos.y - 5.2f + offset);
                 card.tick();
                 offset += 0.1f;
@@ -85,8 +88,8 @@ public class Deck {
     }
 
     public void displayDeck() {
-        Consumer<Card> display = (card) -> {
-            if (!card.isFlipped()) card.flip();
+        Consumer<PlayingCard> display = (card) -> {
+            if (!card.isFlipped() && !discardPile.contains(card) && !currentHand.contains(card)) card.flip();
             card.display();
             };
 
@@ -96,6 +99,8 @@ public class Deck {
     public void clearHand(){
         discard(currentHand);
         currentHand.clear();
+
+        blindEnded = true;
     }
 
     public int getHands(){
@@ -112,21 +117,30 @@ public class Deck {
             currentHand.add(this.playingDeck.removeFirst());
             currentHand.getLast().onDraw();
 
-            currentHand.sort((card1, card2) -> {
-                int rank1 = RANKS.indexOf(card1.getRank());
-                int rank2 = RANKS.indexOf(card2.getRank());
-
-                int suit1 = SUITS.indexOf(card1.getSuit());
-                int suit2 = SUITS.indexOf(card2.getSuit());
-
-                return -Integer.compare(rank1 * 10 + suit1, rank2 * 10 + suit2);
-            });
+            sort(Game.bySuit);
         }
         currentHand.forEach(playingCard -> playingCard.setState(CardState.DRAWING));
     }
 
+    public void sort(boolean suit) {
+        currentHand.sort((card1, card2) -> {
+            int rank1 = RANKS.indexOf(card1.getRank());
+            int rank2 = RANKS.indexOf(card2.getRank());
+
+            int suit1 = SUITS.indexOf(card1.getSuit());
+            int suit2 = SUITS.indexOf(card2.getSuit());
+
+            return -Integer.compare(suit ? suit1 * 100 + rank1 : rank1 * 100 + suit1,
+                    suit ? suit2 * 100 + rank2 : rank2 * 100 + suit2);
+        });
+        currentHand.forEach(card -> card.setState(CardState.DRAWING));
+    }
+
     public float calculateHandPos(int index, int totalCards){
-        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(Math.abs(AXIS - APP.width * 0.1f), Math.abs(AXIS - APP.width * 0.9f)));
+        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(
+                Math.abs(AXIS - APP.width * 0.1f + APP.width * 0.03f * (maxHandSize - totalCards + 1)),
+                Math.abs(AXIS - APP.width * 0.9f + APP.width * 0.03f * (maxHandSize - totalCards + 1))
+        ));
     }
 
     public void displayHand(){
@@ -152,7 +166,6 @@ public class Deck {
             else if (state == CardState.IDLE) {
                 card.setPos(baseX, baseY);
             }
-            if (card.isFlipped() && card.lerpProgress() > 0.5f) card.flip();
         }
         currentHand.forEach(Card::drawShadow);
         selectedCards.forEach(Card::drawShadow);
@@ -171,14 +184,14 @@ public class Deck {
             if (card.getPos().x >= APP.width) {
                 card.setState(CardState.DISCARDING);
             } else {
-                card.setTargetPos(APP.width + 20, HAND_BOX_TOP - CARD_WIDTH, 5);
+                card.setTargetPos(APP.width + CARD_WIDTH * 4, HAND_BOX_TOP - CARD_WIDTH, 5 + (selectedCards.contains(card) ? selectedCards.indexOf(card) * 3 : 0));
             }
             card.display();
         });
     }
 
     public void tick(){
-        if (currentlyPlayingHand) {
+        if (currentlyPlayingHand || blindEnded) {
             drawCooldown.resetTimer();
         }
         drawCooldown.incrementTimer();
@@ -268,6 +281,7 @@ public class Deck {
     public void wonBlind() {
         discardPile.clear();
         setPlayingDeck();
+        blindEnded = false;
 
         playingDeck.forEach( card -> {
                 card.setPos(this.pos.x + 5.2f - playingDeck.indexOf(card) * 0.1f, this.pos.y - 5.2f + playingDeck.indexOf(card) * 0.1f);

@@ -7,8 +7,8 @@
     </content>
     <orderEntry type="jdk" jdkName="openjdk-22" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="core" level="project" />
-    <orderEntry type="library" name="apfloat" level="project" />
-    <orderEntry type="library" name="jogamp-fat" level="project" />
+    <orderEntry type="library" exported="" name="core" level="project" />
+    <orderEntry type="library" exported="" name="apfloat" level="project" />
+    <orderEntry type="library" exported="" name="jogamp-fat" level="project" />
   </component>
 </module>

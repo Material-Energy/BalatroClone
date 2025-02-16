@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static processing.core.PApplet.print;
 import static processing.core.PApplet.println;
 
@@ -29,7 +29,7 @@ public class SpriteSheet {
     }
 
     public void load(){
-        spritesheet = app.loadImage("../resources/" + file + ".png");
+        spritesheet = app.loadImage("../resources/images/" + file + ".png");
 
         System.out.println("Loading Sprites for " + file);
 
@@ -40,7 +40,7 @@ public class SpriteSheet {
     }
 
     public Sprite getSprite(String name){
-        if (spritesheet == null) spritesheet = app.loadImage("../resources/" + file + ".png");
+        if (spritesheet == null) spritesheet = app.loadImage("../resources/images/" + file + ".png");
 
         for (IDisplay sprite : sprites){
             if (Objects.equals(sprite.getName(), name) && sprite instanceof Sprite) {

@@ -1,6 +1,7 @@
 package io.github.metereel.gui;
 
 import io.github.metereel.Game;
+import io.github.metereel.Timer;
 import io.github.metereel.card.*;
 import org.apfloat.Apfloat;
 import org.apfloat.ApfloatMath;
@@ -10,9 +11,10 @@ import processing.core.PVector;
 import static io.github.metereel.Constants.CARD_HEIGHT;
 import static io.github.metereel.Constants.CARD_WIDTH;
 import static io.github.metereel.Game.inBlind;
+import static io.github.metereel.card.Deck.AXIS;
 import static io.github.metereel.gui.ScorerHelper.*;
 import static io.github.metereel.Helper.*;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 
 
 public class HudDisplay {
@@ -28,11 +30,15 @@ public class HudDisplay {
     private final Button discardButton;
     private final Button playHandButton;
     private final Button[] blindButtons;
+    private final Button sortBySuit;
+    private final Button sortByRank;
+    private final Timer blindTimer = new Timer();
     public static Card hoveringCard;
     private boolean isDragging = false;
 
     private HandType playingHand = HandType.HIGH_CARD;
     private Scorer scorer;
+    private boolean hasUpdatedBlind;
 
 
     public HudDisplay(){
@@ -60,6 +66,25 @@ public class HudDisplay {
                 new Button(0, 0, 175, 75, APP.color(225, 135, 40), APP.color(90), new Text("%s")),
                 new Button(0, 0, 175, 75, APP.color(225, 135, 40), APP.color(90), new Text("%s"))
         };
+
+        sortByRank = new Button(
+                AXIS + 100,
+                 HAND_Y - CARD_WIDTH * 1.6f,
+                100,
+                50,
+                APP.color(225, 135, 40),
+                APP.color(90),
+                new Text("Rank")
+        );
+        sortBySuit = new Button(
+                AXIS - 100,
+                HAND_Y - CARD_WIDTH * 1.6f,
+                100,
+                50,
+                APP.color(225, 135, 40),
+                APP.color(90),
+                new Text("Suit")
+        );
     }
     
     public void initialize(){
@@ -78,6 +103,13 @@ public class HudDisplay {
     public void display(){
         APP.background(APP.color(75, 105, 47));
 
+        APP.fill(APP.color(255));
+        APP.textSize(15);
+        APP.text(STR."(\{APP.mouseX}, \{APP.mouseY}) \{Math.round(APP.frameRate)} FPS",
+                APP.width / 2.0f,
+                30);
+
+
         PVector handTypePos = new PVector(.15f * APP.width, .22f * APP.height);
         PVector handTypeSize = new PVector(250, 150);
         drawScorer(handTypePos, handTypeSize);
@@ -85,7 +117,7 @@ public class HudDisplay {
         drawPlayStats();
 
         if (inBlind) {
-            drawButtons(handTypePos);
+            drawButtons();
 
             scorer.display(playingHand);
 
@@ -95,33 +127,45 @@ public class HudDisplay {
             currentDeck.displayDiscard();
         } else {
             scorer.display(playingHand, true);
+            scorer.resetTilt();
             drawBlinds();
         }
         currentDeck.displayDeck();
     }
 
     private void drawBlinds() {
+        blindTimer.incrementTimer();
+        float y = APP.height * Math.max(0.75f, 1.5f - (blindTimer.getTime() / 10.0f) * 0.25f);
 
         for (int i = 0; i < 3; i++) {
-            PVector center = new PVector(APP.width * 0.38f + i * APP.width * 0.2f, APP.height * 0.75f);
-            PVector size = new PVector(APP.width * 0.15f, APP.height * (currentBlind == i ? 0.9f : 0.8f));
+            PVector center = new PVector(APP.width * 0.38f + i * APP.width * 0.2f, y);
+            PVector size = new PVector(APP.width * 0.15f, APP.height * (currentBlind == i ? 1.0f : 0.8f));
 
             drawBubble(APP.color(75), center, size, 50);
 
-            Button blindButton = blindButtons[i];
-            blindButton.setPos(center.x, center.y - APP.width * (currentBlind == i ? 0.23f : 0.2f));
-            if (currentBlind == i){
-                blindButton.addArg("Select");
-            } else {
-                blindButton.setPressed(true);
-                if (currentBlind < i) {
-                    blindButton.addArg("Upcoming");
-                } else {
-                    blindButton.addArg("Beaten");
-                }
-            }
+            Button blindButton = getButton(i, center);
             blindButton.display();
         }
+        hasUpdatedBlind = true;
+    }
+
+    private Button getButton(int i, PVector center) {
+        Button blindButton = blindButtons[i];
+        blindButton.setPos(center.x, center.y - APP.width * (currentBlind == i ? 0.25f : 0.2f));
+        if (currentBlind == i){
+            blindButton.addArg("Select");
+            if (!hasUpdatedBlind){
+                blindButton.setPressed(false);
+            }
+        } else {
+            blindButton.setPressed(true);
+            if (currentBlind < i) {
+                blindButton.addArg("Upcoming");
+            } else {
+                blindButton.addArg("Beaten");
+            }
+        }
+        return blindButton;
     }
 
     private void drawPlayStats() {
@@ -154,25 +198,22 @@ public class HudDisplay {
         APP.text(currentDeck.getDiscards(), statsX + APP.width * 0.045f, statsY + 10);
     }
 
-    private void drawButtons(PVector handTypePos) {
-        Text handType = new Text(playingHand.toString(), APP.color(255), 15);
+    private void drawButtons() {
         boolean hasSelected = currentDeck.getSelectedAmt() > 0;
 
         if (!hasSelected) {
             discardButton.setPressed(true);
             playHandButton.setPressed(true);
 
-            if (currentlyPlayingHand) {
-                handType.display(handTypePos.add(0, -APP.width * 0.02f), 0.0f);
-            }
         } else {
             discardButton.setPressed(currentDeck.getDiscards() <= 0);
             playHandButton.setPressed(currentDeck.getHands() <= 0);
-            handType.display(handTypePos.add(0, -APP.width * 0.02f), 0.0f);
         }
 
         discardButton.display();
         playHandButton.display();
+        sortBySuit.display();
+        sortByRank.display();
     }
 
     private void drawScorer(PVector handTypePos, PVector handTypeSize){
@@ -180,18 +221,20 @@ public class HudDisplay {
         APP.rect(APP.width * 0.05f, 0,
                 APP.width * 0.2f,
                 APP.height);
-        APP.fill(APP.color(255));
-        APP.textSize(15);
-        APP.text(STR."(\{APP.mouseX}, \{APP.mouseY}) \{Math.round(APP.frameRate)} FPS",
-                APP.width / 2.0f,
-                30);
         drawBubble(APP.color(50), handTypePos, handTypeSize, 5);
         scorer.drawBubbles();
         scorer.drawRequirement();
+
+        Text handType = new Text(playingHand.toString(), APP.color(255), 15);
+        boolean hasSelected = currentDeck.getSelectedAmt() > 0;
+        if (hasSelected || currentlyPlayingHand){
+            handType.display(handTypePos.add(0, -APP.width * 0.03f), 0.0f);
+        }
     }
 
     private void drawPlayedHand() {
         if (playedHand != null){
+            playedHand.forEach(Card::drawShadow);
             playedHand.forEach(Card::display);
         }
     }
@@ -255,6 +298,9 @@ public class HudDisplay {
 
     private void checkButtons(){
         if (inBlind) {
+            boolean hoveringSuit = sortBySuit.checkPressed();
+            boolean hoveringRank = sortByRank.checkPressed();
+
             boolean isHoveringDiscard = discardButton.checkPressed();
             boolean isHoveringPlay = playHandButton.checkPressed();
             boolean hasSelected = currentDeck.getSelectedAmt() > 0;
@@ -264,6 +310,9 @@ public class HudDisplay {
 
             discardButton.setPressed(isHoveringDiscard && hasSelected && hasDiscards);
             playHandButton.setPressed(isHoveringPlay && hasSelected && hasHands);
+
+            sortBySuit.setPressed(hoveringSuit);
+            sortByRank.setPressed(hoveringRank);
         } else {
             Button blindButton = blindButtons[currentBlind];
             blindButton.setPressed(blindButton.checkPressed());
@@ -277,6 +326,12 @@ public class HudDisplay {
                 currentDeck.discardSelected();
             } else if (playHandButton.checkClicked() && hasSelected) {
                 startScoring(currentDeck.playHand());
+            } else if (sortByRank.checkClicked()){
+                Game.bySuit = false;
+                currentDeck.sort(false);
+            } else if (sortBySuit.checkClicked()){
+                Game.bySuit = true;
+                currentDeck.sort(true);
             }
         } else {
             Button blindButton = blindButtons[currentBlind];
@@ -314,11 +369,14 @@ public class HudDisplay {
 
     public void blindWon() {
         currentDeck.wonBlind();
-        scorer = new Scorer(ApfloatMath.pow(scorer.getRequirement().precision(3), new Apfloat("1.5")).precision(3));
+        blindTimer.resetTimer();
+        hasUpdatedBlind = false;
+        scorer = new Scorer(scorer.getRequirement().multiply(blindMult));
         inBlind = false;
         currentBlind++;
 
         if (currentBlind > 2){
+            blindMult = ApfloatMath.pow(blindMult, new Apfloat("1.01"));
             ante++;
             currentBlind = 0;
         }

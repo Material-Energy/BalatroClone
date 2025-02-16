@@ -11,15 +11,15 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static io.github.metereel.Constants.*;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static io.github.metereel.card.HandType.*;
 import static processing.core.PApplet.*;
 
 public class Helper {
     public static void loadFaces(){
         for (int i = 0; i < RANKS.size(); i++){
-            for (int j = 0; j < SUITS.size(); j++){
-                FACES.add(new Sprite(CARD_WIDTH * i, CARD_HEIGHT * j, CARD_WIDTH, CARD_HEIGHT, STR."\{RANKS.get(i)} \{SUITS.get(j)}"));
+            for (int j = 0; j < SUITS_TEXTURE.size(); j++){
+                FACES.add(new Sprite(CARD_WIDTH * i, CARD_HEIGHT * j, CARD_WIDTH, CARD_HEIGHT, STR."\{RANKS.get(i)} \{SUITS_TEXTURE.get(j)}"));
             }
         }
     }

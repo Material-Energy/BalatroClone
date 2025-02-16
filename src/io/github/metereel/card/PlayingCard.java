@@ -1,15 +1,16 @@
 package io.github.metereel.card;
 
 import io.github.metereel.Helper;
+import io.github.metereel.api.Enhancement;
 import io.github.metereel.api.Score;
 import io.github.metereel.gui.Scorer;
 import io.github.metereel.gui.Text;
+import io.github.metereel.sprites.Shaders;
 
 import java.util.Objects;
 import java.util.Random;
 
 import static io.github.metereel.Constants.*;
-import static io.github.metereel.Main.APP;
 import static processing.core.PApplet.*;
 
 public class PlayingCard extends Card{
@@ -20,8 +21,9 @@ public class PlayingCard extends Card{
     private String rankSuit;
     private String rank;
     private String suit;
-    private boolean triggered = false;
-    private Random random = new Random();
+    private final Random random = new Random();
+
+    private Enhancement enhancement = Enhancement.NORMAL;
 
     public PlayingCard(Deck deck, Text name, String deckType, String cardType, String rankSuit) {
         super(name);
@@ -56,8 +58,9 @@ public class PlayingCard extends Card{
         updateSprite();
     }
 
-    public void setCardType(String cardType){
-        this.cardType = cardType;
+    public void setEnhancement(Enhancement enhancement){
+        this.enhancement = enhancement;
+        this.cardType = enhancement.getCardType();
         updateSprite();
     }
 
@@ -67,33 +70,17 @@ public class PlayingCard extends Card{
 
     @Override
     protected void addTriggers() {
-        trigger.addTrigger(new Score(Score.Type.ADD_CHIPS, getChips()), BASE_CHIPS);
-        trigger.addTrigger(new Score(Score.Type.TIMES_MULT, 3), 3);
-        trigger.addTrigger(new Score(Score.Type.POW_CHIPS, 1.3f), 4);
-        trigger.addTrigger(new Score(Score.Type.POW_MULT, 1.1f), 5);
+        trigger.addTrigger(new Score(Score.Type.ADD_CHIPS, getChips()), BASE);
     }
 
+    @Override
     public void updateSprite(){
         this.cardFront = CARDS.getSprite(cardType);
         this.cardFront.layerSprite(FACES.getSprite(rankSuit), 0, 0);
 
-        switch (edition){
-            case FOIL -> cardFront.applyMask(color -> {
-                float alpha = APP.alpha(color);
-                float red = APP.red(color);
-                float green = APP.green(color);
-                float blue = APP.blue(color);
-
-                int deltaBlue = 40;
-
-                red = Math.max(0, red - deltaBlue);
-                green = Math.max(0, green - deltaBlue);
-                return APP.color(red, green, blue, alpha);
-            });
-        }
-
-
         this.cardBack = CARD_BACKS.getSprite(deckType);
+
+        super.updateSprite();
     }
 
     private float getChips() {

@@ -3,15 +3,15 @@ package io.github.metereel.sprites;
 import processing.core.PImage;
 import processing.core.PVector;
 
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.IntUnaryOperator;
-
+import static io.github.metereel.Constants.CARD_HEIGHT;
+import static io.github.metereel.Constants.CARD_WIDTH;
 import static processing.core.PApplet.println;
 import static processing.core.PConstants.ARGB;
 
 public class Sprite extends IDisplay {
     private PImage image;
+    private PImage spriteSheet;
+    private final float seed = (float) Math.round(Math.random() * 5);;
 
     public Sprite(int offsetX, int offsetY, int sizeWidth, int sizeHeight) {
         this(offsetX, offsetY, sizeWidth, sizeHeight, "");
@@ -31,12 +31,13 @@ public class Sprite extends IDisplay {
                 name
         );
 
-        sprite.override(this.image);
+        sprite.override(this.image, this.spriteSheet);
         return sprite;
     }
 
-    public void override(PImage image) {
+    public void override(PImage image, PImage spriteSheet) {
         this.image = image.copy();
+        this.spriteSheet = spriteSheet;
     }
 
     private void cropImage(PImage spritesheet) {
@@ -74,14 +75,6 @@ public class Sprite extends IDisplay {
         }
 
         layer.updatePixels();
-        image.updatePixels();
-    }
-
-    public void applyMask(IntUnaryOperator pixelMap){
-        image.loadPixels();
-        for (int i = 0; i < image.pixels.length; i++){
-            image.pixels[i] = pixelMap.applyAsInt(image.pixels[i]);
-        }
         image.updatePixels();
     }
 
@@ -126,6 +119,7 @@ public class Sprite extends IDisplay {
 
     @Override
     public Sprite apply(PImage spritesheet) {
+        this.spriteSheet = spritesheet;
         cropImage(spritesheet);
         return this;
     }
@@ -133,6 +127,7 @@ public class Sprite extends IDisplay {
     @Override
     public void display(PVector pos, float rotation, float size) {
         if (image == null) return;
+        if (spriteSheet == null) return;
         app.pushMatrix();
 
         app.translate(pos.x, pos.y);
@@ -140,8 +135,19 @@ public class Sprite extends IDisplay {
         app.imageMode(app.CENTER);
         app.scale(size);
 
+        if (hasShader()){
+            shader.updateShader(this.sizeWidth, this.sizeHeight, this.seed);
+            app.shader(shader.asShader());
+        }
         app.image(image, 0, 0);
+        app.resetShader();
         app.popMatrix();
+    }
+
+    public void forceUpdateShader(){
+        if (hasShader()){
+            shader.periodic();
+        }
     }
 
     @Override

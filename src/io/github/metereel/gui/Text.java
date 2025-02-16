@@ -5,7 +5,7 @@ import processing.core.PVector;
 
 import java.util.ArrayList;
 
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static processing.core.PConstants.CENTER;
 
 public class Text {

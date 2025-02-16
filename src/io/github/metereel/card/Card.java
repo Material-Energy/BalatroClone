@@ -3,6 +3,7 @@ package io.github.metereel.card;
 import io.github.metereel.Timer;
 import io.github.metereel.api.Edition;
 import io.github.metereel.api.Trigger;
+import io.github.metereel.sprites.Shaders;
 import io.github.metereel.sprites.Sprite;
 import io.github.metereel.gui.Text;
 import processing.core.PVector;
@@ -12,7 +13,7 @@ import java.util.Random;
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
 import static io.github.metereel.gui.HudDisplay.hoveringCard;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static processing.core.PVector.*;
 
 public abstract class Card {
@@ -137,7 +138,40 @@ public abstract class Card {
         return hasTarget;
     }
 
-    public abstract void updateSprite();
+    public void updateSprite(){
+        switch (edition){
+            case NORMAL -> this.cardFront.removeShader();
+            case FOIL -> this.cardFront.setShader(Shaders.FOIL);
+            case HOLOGRAPHIC -> this.cardFront.setShader(Shaders.HOLOGRAPHIC);
+            case POLYCHROME -> this.cardFront.setShader(Shaders.POLYCHROME);
+            case NEGATIVE -> this.cardFront.setShader(Shaders.NEGATIVE);
+//            case FOIL -> cardFront.applyMask(color -> {
+//                float alpha = APP.alpha(color);
+//                float red = APP.red(color);
+//                float green = APP.green(color);
+//                float blue = APP.blue(color);
+//
+//                int deltaBlue = 60;
+//
+//                red = Math.max(0, red - deltaBlue);
+//                green = Math.max(0, green - deltaBlue);
+//                return APP.color(red, green, blue, alpha);
+//            });
+//
+//            case HOLOGRAPHIC -> cardFront.applyMask(color -> {
+//                float alpha = APP.alpha(color);
+//                float red = APP.red(color);
+//                float green = APP.green(color);
+//                float blue = APP.blue(color);
+//
+//                int deltaRed = 60;
+//
+//                blue = Math.max(0, blue - deltaRed);
+//                green = Math.max(0, green - deltaRed);
+//                return APP.color(red, green, blue, alpha);
+//            });
+        }
+    }
 
     public void updateTargetPosition(){
         if (targetPos.dist(pos) <= 0.1f) {
@@ -214,6 +248,7 @@ public abstract class Card {
         if (isFlipped){
             if (cardBack != null) cardBack.display(pos, rot, size);
         } else {
+            cardFront.forceUpdateShader();
             if (cardFront != null) cardFront.display(pos, rot, size);
         }
     }

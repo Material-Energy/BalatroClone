@@ -2,6 +2,7 @@ package io.github.metereel.sprites;
 
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.opengl.PShader;
 
 public class Animation extends IDisplay{
     private int currentFrame = 0;
@@ -48,6 +49,14 @@ public class Animation extends IDisplay{
         }
 
         return this;
+    }
+
+    @Override
+    public void setShader(Shader shader) {
+        super.setShader(shader);
+        for (int i = 0; i < frames; i++){
+            sprites[i].setShader(shader);
+        }
     }
 
     @Override

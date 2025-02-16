@@ -3,7 +3,7 @@ package io.github.metereel.gui;
 import processing.core.PVector;
 
 import static io.github.metereel.Helper.*;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 
 public class Button {
     private final PVector pos = new PVector();

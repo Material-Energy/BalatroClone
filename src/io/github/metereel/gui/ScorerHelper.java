@@ -1,11 +1,11 @@
 package io.github.metereel.gui;
 
-import io.github.metereel.Game;
 import io.github.metereel.Timer;
 import io.github.metereel.api.ScorePopup;
 import io.github.metereel.card.Card;
 import io.github.metereel.card.CardState;
 import io.github.metereel.card.PlayingCard;
+import org.apfloat.Apfloat;
 import processing.core.PVector;
 
 import java.util.ArrayList;
@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import static io.github.metereel.Constants.CARD_HEIGHT;
 import static io.github.metereel.Constants.HUD;
 import static io.github.metereel.Helper.activeCards;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static io.github.metereel.card.Deck.AXIS;
+import static processing.core.PApplet.println;
 
 public class ScorerHelper {
 
+    public static Apfloat blindMult = new Apfloat("1.6");
     private static int CYCLE_TIME = 20;
     public static ArrayList<PlayingCard> playedHand;
     public static boolean currentlyPlayingHand;
@@ -37,7 +39,6 @@ public class ScorerHelper {
         if (playingTimer.getTimeWithCycle(CYCLE_TIME * 4) == 0){
             if (willEnd){
                 playedHand = null;
-                HUD.getDeck().clearHand();
                 HUD.blindWon();
                 return;
             }
@@ -57,8 +58,14 @@ public class ScorerHelper {
                 HUD.getDeck().discard(playedHand);
                 scoreDisplay = null;
 
-                if (HUD.getScorer().hasWon())
+                if (HUD.getScorer().hasWon()){
+                    if (!willEnd)
+                        playingTimer.resetTimer();
                     willEnd = true;
+                    HUD.getDeck().clearHand();
+                } else {
+                    playedHand = null;
+                }
             } else {
                 for (PlayingCard card : playedHand) {
                     if (!card.isSelected()) continue;

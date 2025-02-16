@@ -3,8 +3,9 @@ package io.github.metereel.sprites;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
+import processing.opengl.PShader;
 
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 
 public abstract class IDisplay {
     protected static final PApplet app = APP;
@@ -16,6 +17,8 @@ public abstract class IDisplay {
     protected int sizeWidth;
     protected int sizeHeight;
 
+    protected Shader shader;
+
     public IDisplay(int offsetX, int offsetY, int sizeWidth, int sizeHeight, String name){
 
         this.offsetX = offsetX;
@@ -25,6 +28,18 @@ public abstract class IDisplay {
         this.sizeHeight = sizeHeight;
 
         this.name = name;
+    }
+
+    public void setShader(Shader shader){
+        this.shader = shader;
+    }
+
+    public void removeShader(){
+        this.shader = null;
+    }
+
+    public boolean hasShader(){
+        return this.shader != null;
     }
 
     public abstract void display(PVector pos, float rotation, float size);

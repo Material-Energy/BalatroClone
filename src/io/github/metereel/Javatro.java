@@ -9,39 +9,28 @@ import java.awt.*;
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
 
-public class Main extends PApplet {
-    public static PApplet APP = new Main();
-    public static PFont FONT;
+public class Javatro extends PApplet {
+    public static final PApplet APP = new Javatro();
 
     @Override
     public void settings(){
         size(1500, (int) (1500 * 0.6f), P2D);
 
         loadFaces();
-
-
-
     }
 
     @Override
     public void setup() {
-        CARDS.load();
-        CARD_BACKS.load();
-        FACES.load();
 
-        FONT = APP.createFont("../resources/balatro.ttf", 32);
-        APP.noStroke();
-        textFont(FONT);
-        PVector center = centerWindow();
-        surface.setLocation((int) center.x, (int) center.y);
 
+        Game.initialize();
         HUD.initialize();
     }
 
     public static PVector centerWindow() {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (int) ((dimension.getWidth()) / 2);
-        int y = (int) ((dimension.getHeight()) / 2);
+        int x = (int) ((dimension.getWidth() - 750) / 2);
+        int y = (int) ((dimension.getHeight() - 450) / 2);
         return new PVector(x, y);
     }
 

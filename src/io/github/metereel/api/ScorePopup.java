@@ -6,7 +6,7 @@ import processing.core.PVector;
 
 import java.util.Random;
 
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static io.github.metereel.gui.HudDisplay.*;
 import static processing.core.PApplet.radians;
 

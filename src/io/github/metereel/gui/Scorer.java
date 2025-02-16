@@ -13,16 +13,19 @@ import static io.github.metereel.Game.inBlind;
 import static io.github.metereel.Helper.withTilt;
 import static io.github.metereel.gui.ScorerHelper.currentlyPlayingHand;
 import static io.github.metereel.Helper.drawBubble;
-import static io.github.metereel.Main.APP;
+import static io.github.metereel.Javatro.APP;
 import static io.github.metereel.gui.HudDisplay.BLUE;
 import static io.github.metereel.gui.HudDisplay.RED;
 import static io.github.metereel.gui.ScorerHelper.playingTimer;
 
 
 public class Scorer {
+    private final float BUBBLE_POS = 0.225f;
+
     private Apfloat chips;
     private Apfloat mult;
 
+    private Apfloat handScore;
     private Apfloat currentScore;
     private final Apfloat requiredScore;
 
@@ -32,6 +35,9 @@ public class Scorer {
     public Scorer(Apfloat anteScore){
         chips = Apfloat.ZERO;
         mult = Apfloat.ZERO;
+
+        handScore = Apfloat.ZERO;
+        currentScore = Apfloat.ZERO;
         requiredScore = anteScore;
 
         updateCurrentScore();
@@ -74,11 +80,12 @@ public class Scorer {
     }
 
     private void updateCurrentScore() {
-        currentScore = chips.multiply(mult);
+        handScore = chips.multiply(mult);
     }
 
     public boolean hasWon(){
         updateCurrentScore();
+        currentScore = currentScore.add(handScore);
         return currentScore.compareTo(requiredScore) >= 0;
     }
 
@@ -105,8 +112,8 @@ public class Scorer {
     public void display(HandType handType, boolean override){
         if (HUD.getDeck().getSelectedAmt() >= 1)
             setBaseScore(handType, handLevels.get(handType));
-        PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * 0.245f);
-        PVector multPos = new PVector(APP.width * 0.2f, APP.height * 0.245f);
+        PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * BUBBLE_POS);
+        PVector multPos = new PVector(APP.width * 0.2f, APP.height * BUBBLE_POS);
 
 
         if ((HUD.getDeck().getSelectedAmt() < 1 && !currentlyPlayingHand) || override) {
@@ -135,15 +142,15 @@ public class Scorer {
     }
 
     public void drawBubbles() {
-        PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * 0.245f);
-        PVector multPos = new PVector(APP.width * 0.2f, APP.height * 0.245f);
+        PVector chipsPos = new PVector(APP.width * 0.1f, APP.height * BUBBLE_POS);
+        PVector multPos = new PVector(APP.width * 0.2f, APP.height * BUBBLE_POS);
 
         PVector scoreSize = new PVector(75, 50);
         drawBubble(RED, multPos, scoreSize, 5);
         drawBubble(BLUE, chipsPos, scoreSize, 5);
 
         new Text("X", RED, 30)
-                .display(new PVector(APP.width * .15f, APP.height * .245f), 0.0f);
+                .display(new PVector(APP.width * .15f, APP.height * BUBBLE_POS), 0.0f);
     }
 
     public Apfloat getRequirement() {
@@ -167,9 +174,14 @@ public class Scorer {
 
         if (inBlind) {
             new Text(requirement, APP.color(255), 20)
-                    .display(new PVector(APP.width * .15f, APP.height * .12f), 0.0f);
+                    .display(new PVector(APP.width * .15f, APP.height * .11f), 0.0f);
             new Text(currentScore, APP.color(255), 20)
-                    .display(new PVector(APP.width * .15f, APP.height * .15f), 0.0f);
+                    .display(new PVector(APP.width * .15f, APP.height * .275f), 0.0f);
         }
+    }
+
+    public void resetTilt() {
+        this.tileMult = false;
+        this.tiltChips = false;
     }
 }
