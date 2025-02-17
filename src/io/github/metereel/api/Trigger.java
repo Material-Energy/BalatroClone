@@ -65,4 +65,8 @@ public class Trigger {
     public void skip() {
         moveToNext();
     }
+
+    public Trigger copy() {
+        return new Trigger(this.triggerOrder);
+    }
 }

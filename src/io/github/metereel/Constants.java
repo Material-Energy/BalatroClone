@@ -22,12 +22,15 @@ public class Constants {
     public static final SpriteSheet CARDS = new SpriteSheet("card_empty",
             new Sprite(0, 0, CARD_WIDTH, CARD_HEIGHT, "Card Empty"),
             new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Bonus"),
-            new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Mult"),
-            new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Lucky"),
-            new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Glass"),
-            new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Steel"),
-            new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Gold"),
-            new Sprite(CARD_WIDTH, 0, CARD_WIDTH, CARD_HEIGHT, "Card Wild")
+            new Sprite(CARD_WIDTH * 2, 0, CARD_WIDTH, CARD_HEIGHT, "Card Mult"),
+            new Sprite(CARD_WIDTH * 3, 0, CARD_WIDTH, CARD_HEIGHT, "Card Lucky"),
+            new Sprite(0, CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT, "Card Glass"),
+            new Sprite(CARD_WIDTH, CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT, "Card Steel"),
+            new Sprite(CARD_WIDTH * 2, CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT, "Card Gold"),
+            new Sprite(CARD_WIDTH * 3, CARD_HEIGHT, CARD_WIDTH, CARD_HEIGHT, "Card Wild")
+    );
+    public static final SpriteSheet JOKERS = new SpriteSheet("jokers",
+            new Sprite(0, 0, CARD_WIDTH, CARD_HEIGHT, "Hanging Chad")
     );
 
     public static final SpriteSheet FACES = new SpriteSheet( "faces");

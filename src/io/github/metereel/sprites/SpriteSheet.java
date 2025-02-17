@@ -47,6 +47,7 @@ public class SpriteSheet {
                 return (Sprite) sprite.copy();
             }
         }
+        System.out.println("Could not find image " + name);
         return null;
     }
 

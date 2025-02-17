@@ -14,13 +14,12 @@ import java.util.function.Consumer;
 
 import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.getHand;
-import static io.github.metereel.gui.HudDisplay.HAND_BOX_TOP;
-import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Javatro.APP;
+import static io.github.metereel.gui.HudDisplay.*;
 import static io.github.metereel.gui.ScorerHelper.currentlyPlayingHand;
 
 public class Deck {
-    public static final float AXIS = 0.6f * APP.width;
+    public static final float AXIS = APP.width * 0.6f;
     private static final int MAX_SELECTED = 5;
     private final String deckType;
 
@@ -29,7 +28,7 @@ public class Deck {
 
     private final ArrayList<PlayingCard> discardPile = new ArrayList<>();
     private final ArrayList<PlayingCard> playingDeck = new ArrayList<>();
-    private final ArrayList<PlayingCard> currentHand = new ArrayList<>();
+    private final CardContainer<PlayingCard> currentHand = new CardContainer<>(8);
     private int maxHandSize = 8;
     private int maxHands = 4;
     private int maxDiscards = 3;
@@ -45,10 +44,6 @@ public class Deck {
         deckType = "Deck Normal";
 
         generateDeck();
-    }
-
-    public int getHandSize() {
-        return maxHandSize;
     }
 
     public int getSelectedAmt() {
@@ -97,7 +92,7 @@ public class Deck {
     }
 
     public void clearHand(){
-        discard(currentHand);
+        discard(currentHand.getStored());
         currentHand.clear();
 
         blindEnded = true;
@@ -112,10 +107,12 @@ public class Deck {
     }
 
     public void fillHand() {
-        if (currentHand.size() < maxHandSize){
+        if (currentHand.hasSpace()){
             if (this.playingDeck.isEmpty()) return;
-            currentHand.add(this.playingDeck.removeFirst());
-            currentHand.getLast().onDraw();
+
+            PlayingCard playingCard = this.playingDeck.removeFirst();
+            currentHand.insert(playingCard);
+            playingCard.onDraw();
 
             sort(Game.bySuit);
         }
@@ -123,16 +120,24 @@ public class Deck {
     }
 
     public void sort(boolean suit) {
-        currentHand.sort((card1, card2) -> {
-            int rank1 = RANKS.indexOf(card1.getRank());
-            int rank2 = RANKS.indexOf(card2.getRank());
+        currentHand.getStored().sort((card1, card2) -> {
+            int rank1, rank2, suit1, suit2;
+            rank1 = rank2 = suit1 = suit2 = 0;
 
-            int suit1 = SUITS.indexOf(card1.getSuit());
-            int suit2 = SUITS.indexOf(card2.getSuit());
+            if (card1 instanceof PlayingCard playingCard1 && card2 instanceof PlayingCard playingCard2){
+                rank1 = RANKS.indexOf(playingCard1.getRank());
+                rank2 = RANKS.indexOf(playingCard2.getRank());
+
+                suit1 = SUITS.indexOf(playingCard1.getSuit());
+                suit2 = SUITS.indexOf(playingCard2.getSuit());
+            }
+
+
 
             return -Integer.compare(suit ? suit1 * 100 + rank1 : rank1 * 100 + suit1,
                     suit ? suit2 * 100 + rank2 : rank2 * 100 + suit2);
         });
+
         currentHand.forEach(card -> card.setState(CardState.DRAWING));
     }
 
@@ -144,33 +149,9 @@ public class Deck {
     }
 
     public void displayHand(){
-        float baseX;
-        float baseY = HudDisplay.HAND_Y;
+        currentHand.display(HAND_Y, AXIS, APP.width * 0.1f, APP.width * 0.9f);
 
-        int displayedCards = currentHand.size();
-
-        for (int i = 0; i < displayedCards; i++) {
-            Card card = currentHand.get(i);
-
-            baseX = calculateHandPos(i, displayedCards - 1);
-
-            CardState state = card.getState();
-            if (state == CardState.DRAWING) {
-                if (card.getPos().dist(new PVector(baseX, baseY)) >= 0.1f) card.setTargetPos(baseX, baseY, 20);
-                if (card.isFlipped() && card.lerpProgress() > 0.9f) card.flip();
-
-                if (!card.hasTarget()){
-                    card.setState(CardState.IDLE);
-                }
-            }
-            else if (state == CardState.IDLE) {
-                card.setPos(baseX, baseY);
-            }
-        }
-        currentHand.forEach(Card::drawShadow);
         selectedCards.forEach(Card::drawShadow);
-
-        currentHand.forEach(Card::display);
         selectedCards.forEach(Card::display);
         if (hoveringCard != null) hoveringCard.display();
     }
@@ -225,7 +206,7 @@ public class Deck {
 
         currentHand.forEach(card -> {
             if (card != draggedCard && card.getState() != CardState.SWAPPING){
-                float deckPos = calculateHandPos(currentHand.indexOf(draggedCard), currentHand.size());
+                float deckPos = currentHand.calculateXPos(currentHand.indexOf(draggedCard), AXIS, APP.width * 0.1f, APP.width * 0.9f);
                 float cardPos = card.getPos().x;
 
                 float supposedPos = Math.signum(deckPos - cardPos);
@@ -235,7 +216,7 @@ public class Deck {
                 int indexTo = currentHand.indexOf(draggedCard);
 
                 if (supposedPos * actualPos < 0.0f && Math.abs(indexFrom - indexTo) <= 1){
-                    Collections.swap(currentHand, indexFrom, indexTo);
+                    Collections.swap(currentHand.getStored(), indexFrom, indexTo);
                     card.setState(CardState.SWAPPING);
                     hasSwapped.set(true);
                 }
@@ -267,14 +248,18 @@ public class Deck {
     public ArrayList<PlayingCard> playHand(){
         ArrayList<PlayingCard> playedHand = new ArrayList<>(selectedCards);
         this.hands--;
-        currentHand.forEach(PlayingCard::onPlay);
+        currentHand.forEach(card -> {
+            if (card instanceof PlayingCard playingCard){
+                playingCard.onPlay();
+            }
+        });
         currentHand.removeAll(selectedCards);
         selectedCards.clear();
         return playedHand;
     }
 
     public ArrayList<PlayingCard> getCurrentHand() {
-        return this.currentHand;
+        return this.currentHand.getStored();
     }
 
     public void stopDragging(PlayingCard card) {

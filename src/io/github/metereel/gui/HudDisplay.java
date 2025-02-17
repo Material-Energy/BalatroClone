@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import static io.github.metereel.Constants.CARD_HEIGHT;
 import static io.github.metereel.Constants.CARD_WIDTH;
 import static io.github.metereel.Game.inBlind;
+import static io.github.metereel.Game.jokers;
 import static io.github.metereel.card.Deck.AXIS;
 import static io.github.metereel.gui.ScorerHelper.*;
 import static io.github.metereel.Helper.*;
@@ -118,6 +119,7 @@ public class HudDisplay {
         drawScorer(handTypePos, handTypeSize);
 
         drawPlayStats();
+        drawJokers();
 
         if (inBlind) {
             drawButtons();
@@ -134,6 +136,15 @@ public class HudDisplay {
             drawBlinds();
         }
         currentDeck.displayDeck();
+    }
+
+    private void drawJokers() {
+        jokers.display(
+                APP.height * 0.1f,
+                APP.width * 0.6f,
+                APP.width * 0.2f,
+                APP.width * 0.8f
+        );
     }
 
     private void drawBlinds() {
@@ -246,7 +257,6 @@ public class HudDisplay {
         currentDeck.displayHand();
 
         if (hoveringCard != null){
-            hoveringCard.displayName();
             Text cardName = hoveringCard.getName();
             cardName.setColor(APP.color(255));
             cardName.display(new PVector((discardButton.getPos().x + playHandButton.getPos().x) / 2.0f, .845f * APP.height), 0f);
@@ -372,10 +382,7 @@ public class HudDisplay {
         });
 
 
-        currentDeck.tick();
-        if (playedHand != null){
-            ScorerHelper.scoreHand();
-        }
+
     }
 
 

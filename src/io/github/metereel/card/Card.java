@@ -14,6 +14,7 @@ import static io.github.metereel.Constants.*;
 import static io.github.metereel.Helper.*;
 import static io.github.metereel.gui.HudDisplay.hoveringCard;
 import static io.github.metereel.Javatro.APP;
+import static processing.core.PApplet.radians;
 import static processing.core.PVector.*;
 
 public abstract class Card {
@@ -31,7 +32,7 @@ public abstract class Card {
     protected boolean isFlipped = false;
     private boolean isShaking = false;
     private boolean isSelected = false;
-    private boolean ignore = false;
+    private boolean isTriggered = false;
 
 
     private final PVector pos = new PVector();
@@ -95,11 +96,8 @@ public abstract class Card {
         this.updateSprite();
     }
 
-    public void setIgnore(boolean ignore) {
-        this.ignore = ignore;
-        if (!ignore) {
-            this.setRotation(0.0f);
-        }
+    public void setTriggered(boolean triggered) {
+        this.isTriggered = triggered;
     }
 
     public boolean isSelected() {
@@ -204,7 +202,10 @@ public abstract class Card {
     }
 
     public void updateStatus(){
-        if (ignore) return;
+        if (isTriggered) {
+            this.setSize(1.65f);
+            this.setRotation(radians(5));
+        }
 
         if (isSelected()){
             this.setSize(1.45f);
@@ -216,8 +217,11 @@ public abstract class Card {
             } else {
                 this.setSize(1.6f);
             }
-        } else if (!isSelected()){
+        }
+
+        if (!isTriggered && !isSelected && !isHovering()){
             this.setSize(1.25f);
+            this.setRotation(0f);
         }
     }
 
@@ -267,12 +271,13 @@ public abstract class Card {
         shakingTimer.schedule(i, () -> this.isShaking = false);
     }
 
-    public void displayName() {
-    }
-
     protected void resetTimers() {
         floatTimer.resetTimer();
         shakingTimer.resetTimer();
         lerpTimer.resetTimer();
+    }
+
+    public void retrigger() {
+        this.trigger.retrigger();
     }
 }

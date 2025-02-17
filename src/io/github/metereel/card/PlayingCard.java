@@ -96,9 +96,7 @@ public class PlayingCard extends Card{
 
     public void tryTrigger(Scorer scorer) {
         this.trigger.triggerNext(scorer);
-        this.setSize(1.65f);
-        this.setRotation(radians(5));
-        setIgnore(true);
+        setTriggered(true);
     }
 
     public void onPlay(){
