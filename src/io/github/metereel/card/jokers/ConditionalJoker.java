@@ -17,17 +17,24 @@ public class ConditionalJoker extends JokerCard{
 
     @Override
     public void addTriggers() {
-
+        super.addTriggers();
+//        if (matchesCondition){
+//
+//        }
     }
 
     @Override
-    public boolean onHandPlayed() {
-        return false;
+    public void onHandPlayed() {
     }
 
     @Override
     public boolean onCardTrigger(PlayingCard card, ArrayList<PlayingCard> playedCards) {
         return false;
+    }
+
+    @Override
+    public void postTrigger() {
+
     }
 
     @Override

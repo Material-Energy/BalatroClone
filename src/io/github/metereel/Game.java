@@ -30,7 +30,7 @@ public class Game {
             HUD.getDeck().tick();
             HUD.gameTick();
 
-            if (playedHand != null){
+            if (!playedHand.isEmpty()){
                 ScorerHelper.scoreHand();
             }
 

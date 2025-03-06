@@ -24,8 +24,12 @@ import static io.github.metereel.Javatro.APP;
 public class HudDisplay {
     public static float HAND_Y = 0.75f * APP.height;
     public static float HAND_BOX_TOP = HAND_Y - CARD_HEIGHT * 2 / 3.0f;
+
     public static int RED = APP.color(235, 50, 50);
     public static int BLUE = APP.color(0, 148, 255);
+    public static int ORANGE = APP.color(143, 143, 0);
+    public static int GOLD = APP.color(212, 175, 55);
+
     private Deck currentDeck;
     private int currentBlind = 0;
     private int ante = 1;

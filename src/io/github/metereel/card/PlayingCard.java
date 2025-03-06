@@ -86,19 +86,6 @@ public class PlayingCard extends Card{
         return RankChips.getChips(this.getRank());
     }
 
-    public boolean finishedTriggering() {
-        return this.trigger.getTriggersLeft() <= 0;
-    }
-
-    public void resetTrigger() {
-        this.trigger.reset();
-    }
-
-    public void tryTrigger(Scorer scorer) {
-        this.trigger.triggerNext(scorer);
-        setTriggered(true);
-    }
-
     public void onPlay(){
         this.setRotation(0.0f);
     }
@@ -109,14 +96,6 @@ public class PlayingCard extends Card{
 
     public void onDraw(){
         this.setRotation(radians(random.nextInt(-2, 2)));
-    }
-
-    public Score getCurrentTrigger() {
-        return this.trigger.getCurrentTrigger();
-    }
-
-    public void skipTrigger() {
-        this.trigger.skip();
     }
 
     public void reset() {

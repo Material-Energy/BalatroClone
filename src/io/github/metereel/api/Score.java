@@ -4,8 +4,6 @@ import io.github.metereel.gui.Scorer;
 
 import java.util.function.BiConsumer;
 
-import static processing.core.PApplet.println;
-
 
 public class Score {
     public static final Score EMPTY = new Score(Type.NO_SCORE, 0.0f);

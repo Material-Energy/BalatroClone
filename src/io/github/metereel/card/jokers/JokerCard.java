@@ -2,6 +2,7 @@ package io.github.metereel.card.jokers;
 
 import io.github.metereel.card.Card;
 import io.github.metereel.card.PlayingCard;
+import io.github.metereel.gui.ScorerHelper;
 import io.github.metereel.gui.Text;
 
 import java.util.ArrayList;
@@ -20,9 +21,12 @@ public abstract class JokerCard extends Card {
         this.maxCharge = maxCharge;
     }
 
-    public abstract void addTriggers();
-    public abstract boolean onHandPlayed();
+    public void addTriggers(){
+        this.trigger.removeAll();
+    };
+    public abstract void onHandPlayed();
     public abstract boolean onCardTrigger(PlayingCard card, ArrayList<PlayingCard> playedCards);
+    public abstract void postTrigger();
     public abstract JokerCard copy();
 
     @Override
@@ -43,4 +47,9 @@ public abstract class JokerCard extends Card {
         this.setTriggered(this.nextTrigger);
         this.nextTrigger = false;
     }
+
+    public boolean cannotTrigger(ScorerHelper.Stage playedStage) {
+        return this.edition.getScore().hasNoEffect() || playedStage != ScorerHelper.Stage.POST_TRIGGER_JOKER;
+    }
+
 }

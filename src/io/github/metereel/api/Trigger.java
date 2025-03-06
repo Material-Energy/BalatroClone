@@ -4,6 +4,7 @@ import io.github.metereel.gui.Scorer;
 
 import java.util.ArrayList;
 
+import static processing.core.PApplet.printArray;
 import static processing.core.PApplet.println;
 
 public class Trigger {
@@ -52,6 +53,7 @@ public class Trigger {
 
     public void retrigger(){
         this.triggersLeft++;
+        this.currentTrigger = 0;
     }
 
     public int getTriggersLeft(){
@@ -68,5 +70,9 @@ public class Trigger {
 
     public Trigger copy() {
         return new Trigger(this.triggerOrder);
+    }
+
+    public void removeAll() {
+        this.triggerOrder.clear();
     }
 }

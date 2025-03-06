@@ -79,12 +79,11 @@ public class Scorer {
         tileMult = true;
     }
 
-    private void updateCurrentScore() {
+    public void updateCurrentScore() {
         handScore = chips.multiply(mult);
     }
 
     public boolean hasWon(){
-        updateCurrentScore();
         currentScore = currentScore.add(handScore);
         return currentScore.compareTo(requiredScore) >= 0;
     }

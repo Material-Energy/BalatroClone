@@ -2,7 +2,9 @@ package io.github.metereel.card;
 
 import io.github.metereel.Timer;
 import io.github.metereel.api.Edition;
+import io.github.metereel.api.Score;
 import io.github.metereel.api.Trigger;
+import io.github.metereel.gui.Scorer;
 import io.github.metereel.sprites.Shaders;
 import io.github.metereel.sprites.Sprite;
 import io.github.metereel.gui.Text;
@@ -47,6 +49,7 @@ public abstract class Card {
     private float rotation = 0.0f;
     private float size = 1.0f;
     private boolean hasTarget = false;
+    protected String triggerText;
 
     public Card(Text name){
         this.name = name;
@@ -271,6 +274,10 @@ public abstract class Card {
         shakingTimer.schedule(i, () -> this.isShaking = false);
     }
 
+    public void resetTrigger(){
+        this.trigger.reset();
+    }
+
     protected void resetTimers() {
         floatTimer.resetTimer();
         shakingTimer.resetTimer();
@@ -279,5 +286,36 @@ public abstract class Card {
 
     public void retrigger() {
         this.trigger.retrigger();
+    }
+
+    public boolean finishedTriggering() {
+        return this.trigger.getTriggersLeft() <= 0;
+    }
+
+    public Score getCurrentTrigger() {
+        return this.trigger.getCurrentTrigger();
+    }
+
+    public void skipTrigger() {
+        this.trigger.skip();
+    }
+
+    public void triggerNext() {
+        Scorer scorer = HUD.getScorer();
+        this.triggerText = this.trigger.getCurrentTrigger().toString();
+        this.trigger.triggerNext(scorer);
+    }
+
+    public String getTriggerText() {
+        if (this.triggerText != null){
+            String returnText = this.triggerText;
+            this.triggerText = null;
+            return returnText;
+        }
+        return "";
+    }
+
+    public Trigger getTrigger() {
+        return this.trigger;
     }
 }

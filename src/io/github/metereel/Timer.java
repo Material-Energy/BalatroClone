@@ -31,7 +31,9 @@ public class Timer {
     }
 
     public int getTimeWithCycle(int cycle){
-        return time % cycle;
+        if (time != 0)
+            return time % cycle;
+        return -1;
     }
 
     public void schedule(int time, Runnable command) {

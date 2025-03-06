@@ -1,6 +1,7 @@
 package io.github.metereel.card.jokers;
 
 import io.github.metereel.card.PlayingCard;
+import io.github.metereel.gui.ScorerHelper;
 import io.github.metereel.gui.Text;
 
 import java.util.ArrayList;
@@ -11,12 +12,7 @@ public class HangingChad extends JokerCard {
     }
 
     @Override
-    public void addTriggers() {}
-
-    @Override
-    public boolean onHandPlayed() {
-        this.charge = maxCharge;
-        return false;
+    public void onHandPlayed() {
     }
 
     @Override
@@ -25,8 +21,14 @@ public class HangingChad extends JokerCard {
         if (playedCards.indexOf(card) != 0) return false;
 
         card.retrigger();
+        this.triggerText = "Again!";
         charge--;
         return true;
+    }
+
+    @Override
+    public void postTrigger() {
+
     }
 
     @Override
@@ -34,4 +36,19 @@ public class HangingChad extends JokerCard {
         return new HangingChad();
     }
 
+    @Override
+    public void resetTrigger() {
+        super.resetTrigger();
+        this.charge = maxCharge;
+    }
+
+    @Override
+    public boolean cannotTrigger(ScorerHelper.Stage playedStage) {
+        return super.cannotTrigger(playedStage) && (playedStage != ScorerHelper.Stage.CARD_JOKER || charge <= 0);
+    }
+
+    @Override
+    public boolean finishedTriggering() {
+        return true;
+    }
 }

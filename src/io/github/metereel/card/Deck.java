@@ -29,7 +29,6 @@ public class Deck {
     private final ArrayList<PlayingCard> discardPile = new ArrayList<>();
     private final ArrayList<PlayingCard> playingDeck = new ArrayList<>();
     private final CardContainer<PlayingCard> currentHand = new CardContainer<>(8);
-    private int maxHandSize = 8;
     private int maxHands = 4;
     private int maxDiscards = 3;
     private int hands;
@@ -57,7 +56,6 @@ public class Deck {
                 String cardType = rank + " " + suit;
 
                 PlayingCard card = new PlayingCard(this, new Text(rank + " of " + suit), deckType, "Card Empty", cardType);
-                card.setEdition(Edition.NEGATIVE);
 
                 card.setPos(this.pos.x + 5.2f - offset, this.pos.y - 5.2f + offset);
                 card.tick();
@@ -139,13 +137,6 @@ public class Deck {
         });
 
         currentHand.forEach(card -> card.setState(CardState.DRAWING));
-    }
-
-    public float calculateHandPos(int index, int totalCards){
-        return (AXIS - (totalCards - index - totalCards / 2.0f) * (3.0f / 2 / totalCards) * Math.min(
-                Math.abs(AXIS - APP.width * 0.1f + APP.width * 0.03f * (maxHandSize - totalCards + 1)),
-                Math.abs(AXIS - APP.width * 0.9f + APP.width * 0.03f * (maxHandSize - totalCards + 1))
-        ));
     }
 
     public void displayHand(){
